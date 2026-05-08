@@ -3,962 +3,387 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Brown Bag — Full Demo</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<title>Brown Bag — Demo</title>
 <style>
-:root{
-  --navy:#1B2A4A;--navy-mid:#243660;--navy-light:#2E4480;
-  --gold:#C8973A;--gold-light:#F5E6CC;--gold-pale:#FDF6E8;
-  --teal:#1D9E75;--teal-light:#E1F5EE;
-  --purple:#7F77DD;--purple-light:#EEEDFE;
-  --coral:#D85A30;--coral-light:#FAECE7;
-  --pink:#D4537E;--pink-light:#FBEAF0;
-  --warm:#F8F3EC;--warm-mid:#EDE5D8;--warm-deep:#E0D4C0;
-  --parchment:#FAF6F0;--white:#FDFAF6;
-  --text:#1A1207;--text-mid:#4A3F30;--text-light:#9A8C78;
-  --red-soft:#C0392B;--red-bg:#FDECEA;
-  --green-soft:#1A6B3A;--green-bg:#EAF3DE;
-  --amber:#E67E22;--amber-bg:#FEF5E7;
-  --radius:18px;--radius-sm:11px;--radius-xs:7px;
-}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
-body{font-family:'DM Sans',sans-serif;background:linear-gradient(145deg,#D4C9B8,#C8BAA5 50%,#D0C5B0);display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;}
-.ipad-frame{width:768px;height:1024px;background:linear-gradient(180deg,#2A2A2A,#1A1A1A);border-radius:44px;padding:18px;box-shadow:0 40px 100px rgba(0,0,0,0.5),0 0 0 1px rgba(255,255,255,0.08);flex-shrink:0;position:relative;}
-.ipad-frame::before{content:'';position:absolute;top:10px;left:50%;transform:translateX(-50%);width:80px;height:4px;background:#333;border-radius:4px;}
-.ipad-screen{width:100%;height:100%;background:var(--parchment);border-radius:28px;overflow:hidden;position:relative;}
-.screen{position:absolute;inset:0;display:flex;flex-direction:column;opacity:0;pointer-events:none;transition:opacity .35s ease,transform .35s cubic-bezier(.25,.46,.45,.94);transform:translateX(40px);}
-.screen.active{opacity:1;pointer-events:all;transform:translateX(0);}
-.screen.exit{opacity:0;transform:translateX(-40px);}
-
-/* Topbar */
-.topbar{background:var(--navy);padding:14px 24px 12px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;position:relative;overflow:hidden;}
-.topbar::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.6;}
-.logo-wrap{display:flex;align-items:center;gap:10px;}
-.logo-svg{width:34px;height:34px;flex-shrink:0;}
-.logo-name{font-family:'Playfair Display',serif;font-size:19px;font-weight:700;color:var(--white);line-height:1;}
-.logo-name em{color:var(--gold);font-style:normal;}
-.logo-sub-text{font-size:9px;color:rgba(200,151,58,.7);text-transform:uppercase;letter-spacing:2px;margin-top:2px;}
-.topbar-right{display:flex;align-items:center;gap:10px;}
-.topbar-time{font-size:12px;color:rgba(255,255,255,.5);}
-.topbar-avatar-wrap{position:relative;cursor:pointer;}
-.topbar-avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--gold),#E8A840);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:var(--navy);box-shadow:0 2px 8px rgba(200,151,58,.4);}
-.avatar-canvas-small{width:34px;height:34px;border-radius:50%;overflow:hidden;border:2px solid var(--gold);box-shadow:0 2px 8px rgba(200,151,58,.4);}
-
-/* Nav tabs */
-.nav-tabs{background:var(--warm);border-bottom:1px solid var(--warm-mid);display:flex;flex-shrink:0;}
-.nav-tab{flex:1;padding:10px 8px;font-size:11px;font-weight:600;color:var(--text-light);text-align:center;cursor:pointer;text-transform:uppercase;letter-spacing:.06em;border-bottom:2.5px solid transparent;transition:all .2s;}
-.nav-tab.active{color:var(--navy);border-bottom-color:var(--navy);}
-.nav-tab.done{color:var(--teal);border-bottom-color:var(--teal);}
-
-/* Content */
-.screen-content{flex:1;overflow-y:auto;padding:20px 24px;scrollbar-width:thin;scrollbar-color:var(--warm-mid) transparent;}
-.screen-content::-webkit-scrollbar{width:3px;}
-.screen-content::-webkit-scrollbar-thumb{background:var(--warm-mid);border-radius:3px;}
-.sec-eyebrow{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.12em;color:var(--gold);margin-bottom:3px;}
-.sec-title{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:var(--navy);line-height:1.15;margin-bottom:4px;}
-.sec-sub{font-size:13px;color:var(--text-mid);line-height:1.65;margin-bottom:16px;}
-
-/* Student card */
-.student-card{background:linear-gradient(135deg,var(--navy),var(--navy-mid));border-radius:var(--radius);padding:16px 20px;display:flex;align-items:center;gap:14px;margin-bottom:16px;box-shadow:0 4px 20px rgba(27,42,74,.2);position:relative;overflow:hidden;}
-.student-card::before{content:'';position:absolute;top:-30px;right:-20px;width:120px;height:120px;background:radial-gradient(circle,rgba(200,151,58,.12),transparent 70%);}
-.student-avatar-large{width:52px;height:52px;border-radius:50%;overflow:hidden;border:2px solid var(--gold);flex-shrink:0;box-shadow:0 3px 12px rgba(200,151,58,.4);}
-.student-name{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:white;margin-bottom:3px;}
-.student-meta{font-size:11px;color:rgba(180,200,230,.8);display:flex;gap:10px;flex-wrap:wrap;}
-.student-tag{background:rgba(200,151,58,.2);color:var(--gold);font-size:11px;font-weight:500;padding:4px 10px;border-radius:20px;border:1px solid rgba(200,151,58,.35);}
-
-/* Cards */
-.card{background:white;border:1px solid var(--warm-mid);border-radius:var(--radius);padding:14px 16px;box-shadow:0 1px 6px rgba(0,0,0,.04);margin-bottom:12px;}
-.card-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.09em;color:var(--text-light);margin-bottom:8px;}
-.checkin-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#0D1B2E;color:#fff;min-height:100vh;}
+.nav{background:#1B2A4A;border-bottom:1px solid rgba(200,151,58,.2);display:flex;align-items:center;gap:0;padding:0 16px;height:52px;}
+.nav-logo{font-size:17px;font-weight:700;color:#fff;margin-right:24px;letter-spacing:-.3px;}
+.nav-logo em{color:#C8973A;font-style:normal;}
+.nav-tab{padding:0 14px;height:52px;display:flex;align-items:center;font-size:12px;font-weight:600;color:rgba(255,255,255,.45);cursor:pointer;border-bottom:2px solid transparent;text-transform:uppercase;letter-spacing:.06em;transition:all .2s;}
+.nav-tab.active{color:#C8973A;border-bottom-color:#C8973A;}
+.screen{display:none;height:calc(100vh - 52px);overflow-y:auto;}
+.screen.active{display:flex;flex-direction:column;}
+.av-layout{display:grid;grid-template-columns:1fr 300px;height:100%;}
+.av-stage{background:linear-gradient(180deg,#0D1B2E,#162236);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;position:relative;}
+.av-glow{position:absolute;bottom:80px;left:50%;transform:translateX(-50%);width:160px;height:30px;background:radial-gradient(ellipse,rgba(200,151,58,.3),transparent 70%);filter:blur(10px);}
+.av-scene{width:200px;height:280px;perspective:600px;cursor:grab;user-select:none;}
+.av-scene:active{cursor:grabbing;}
+.av-body-wrap{width:200px;height:280px;transform-style:preserve-3d;transition:transform .05s linear;position:relative;}
+.av-body{position:absolute;left:50px;top:80px;width:100px;height:120px;border-radius:50%;}
+.av-stripe{position:absolute;left:50px;top:126px;width:100px;height:20px;}
+.av-head{position:absolute;left:40px;top:16px;width:120px;height:110px;border-radius:50%;}
+.av-eye{position:absolute;width:20px;height:22px;background:#fff;border-radius:50%;top:44px;}
+.av-eye.l{left:62px;}.av-eye.r{right:62px;}
+.av-pupil{position:absolute;width:12px;height:14px;background:#111;border-radius:50%;top:4px;left:4px;}
+.av-shine{position:absolute;width:5px;height:5px;background:#fff;border-radius:50%;top:2px;left:8px;}
+.av-smile{position:absolute;left:72px;top:82px;width:56px;height:20px;border-bottom:3px solid rgba(130,50,50,.6);border-radius:0 0 50% 50%;}
+.av-cheek{position:absolute;width:18px;height:10px;background:rgba(255,100,120,.35);border-radius:50%;top:70px;}
+.av-cheek.l{left:52px;}.av-cheek.r{right:52px;}
+.av-arm{position:absolute;width:32px;height:60px;border-radius:16px;top:94px;}
+.av-arm.l{left:22px;transform:rotate(12deg);}.av-arm.r{right:22px;transform:rotate(-12deg);}
+.av-leg{position:absolute;width:36px;height:48px;border-radius:18px;bottom:0;}
+.av-leg.l{left:56px;transform:rotate(5deg);}.av-leg.r{right:56px;transform:rotate(-5deg);}
+.av-foot{position:absolute;width:42px;height:22px;background:#222;border-radius:50%;bottom:-4px;transform:scaleX(1.2);}
+.av-foot.l{left:46px;}.av-foot.r{right:44px;}
+.av-hair{position:absolute;left:36px;top:8px;border-radius:50% 50% 0 0;}
+.av-acc{position:absolute;font-size:22px;top:0;left:130px;}
+.av-hint{font-size:11px;color:rgba(255,255,255,.35);margin-top:12px;text-align:center;}
+.av-code{background:rgba(200,151,58,.12);border:1px solid rgba(200,151,58,.3);color:#C8973A;font-size:18px;font-weight:700;letter-spacing:3px;padding:8px 20px;border-radius:8px;margin-bottom:12px;}
+.av-panel{background:#162236;overflow-y:auto;padding:16px;}
+.av-tabs{display:flex;background:#0D1B2E;border-radius:8px;padding:3px;margin-bottom:16px;gap:2px;}
+.av-tabBtn{flex:1;padding:7px 4px;font-size:10px;font-weight:700;color:rgba(255,255,255,.4);border:none;background:transparent;border-radius:6px;cursor:pointer;text-transform:uppercase;letter-spacing:.06em;transition:all .2s;}
+.av-tabBtn.active{background:#1B2A4A;color:#fff;}
+.av-section{display:none;}.av-section.active{display:block;}
+.av-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(200,151,58,.7);margin-bottom:8px;margin-top:14px;}
+.sw-row{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:4px;}
+.sw{width:30px;height:30px;border-radius:50%;cursor:pointer;border:2.5px solid transparent;transition:all .2s;flex-shrink:0;}
+.sw.sel{border-color:#fff;transform:scale(1.18);box-shadow:0 2px 8px rgba(0,0,0,.4);}
+.chip-row{display:flex;flex-wrap:wrap;gap:6px;}
+.chip{padding:6px 11px;border-radius:20px;border:1.5px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);font-size:11px;font-weight:600;color:rgba(255,255,255,.5);cursor:pointer;transition:all .2s;}
+.chip.sel{background:#C8973A;border-color:#C8973A;color:#1B2A4A;}
+.outfit-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+.outfit-card{background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.08);border-radius:10px;padding:10px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:8px;}
+.outfit-card.sel{border-color:#C8973A;background:rgba(200,151,58,.1);}
+.outfit-swatch{width:36px;height:36px;border-radius:7px;flex-shrink:0;}
+.outfit-name{font-size:11px;font-weight:700;color:#fff;}
+.outfit-sub{font-size:10px;color:rgba(255,255,255,.4);}
+.badge-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+.badge-item{background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.07);border-radius:10px;padding:10px 6px;text-align:center;opacity:.4;filter:grayscale(.7);}
+.badge-emoji{font-size:24px;display:block;margin-bottom:4px;}
+.badge-name{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:rgba(255,255,255,.4);}
+.zero-msg{background:rgba(127,119,221,.1);border:1.5px solid rgba(127,119,221,.25);border-radius:10px;padding:14px;text-align:center;margin-bottom:14px;}
+.zero-msg p:first-child{font-size:28px;margin-bottom:6px;}
+.zero-msg p:last-child{font-size:11px;color:rgba(255,255,255,.45);line-height:1.6;}
+.av-save{width:100%;background:linear-gradient(135deg,#C8973A,#E8A840);border:none;border-radius:9px;padding:12px;font-size:13px;font-weight:800;color:#1B2A4A;cursor:pointer;margin-top:16px;}
+.sess-layout{display:grid;grid-template-columns:1fr 340px;height:100%;}
+.sess-main{background:#FAF6F0;overflow-y:auto;padding:20px;}
+.sess-right{background:#F0EAE0;overflow-y:auto;padding:16px;border-left:1px solid #E0D4C0;}
+.ci-header{background:#1B2A4A;border-radius:14px;padding:16px 18px;display:flex;align-items:center;gap:12px;margin-bottom:16px;}
+.ci-avatar{width:44px;height:44px;border-radius:50%;background:#C8973A;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;color:#1B2A4A;}
+.ci-name{font-size:16px;font-weight:700;color:#fff;}
+.ci-meta{font-size:11px;color:rgba(180,200,230,.6);}
+.ci-tag{background:rgba(200,151,58,.2);color:#C8973A;font-size:10px;font-weight:600;padding:3px 9px;border-radius:12px;border:1px solid rgba(200,151,58,.3);margin-left:auto;}
+.ci-card{background:#fff;border:1px solid #E0D4C0;border-radius:12px;padding:14px 16px;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,.04);}
+.ci-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:#9A8C78;margin-bottom:9px;}
 .scale-row{display:flex;gap:6px;}
-.scale-btn{flex:1;aspect-ratio:1;border-radius:var(--radius-xs);border:1.5px solid var(--warm-mid);background:var(--warm);font-size:13px;font-weight:600;color:var(--text-light);cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;}
-.scale-btn.selected-red{background:var(--red-bg);border-color:var(--red-soft);color:var(--red-soft);}
-.scale-btn.selected-amber{background:var(--amber-bg);border-color:var(--amber);color:var(--amber);}
-.scale-btn.selected-green{background:var(--green-bg);border-color:var(--green-soft);color:var(--green-soft);}
+.sc-btn{flex:1;aspect-ratio:1;border-radius:8px;border:1.5px solid #E0D4C0;background:#F8F3EC;font-size:13px;font-weight:700;color:#9A8C78;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;}
+.sc-btn.s-red{background:#FDECEA;border-color:#C0392B;color:#C0392B;}
+.sc-btn.s-amb{background:#FEF5E7;border-color:#E67E22;color:#E67E22;}
+.sc-btn.s-grn{background:#EAF3DE;border-color:#1A6B3A;color:#1A6B3A;}
 .mood-row{display:flex;flex-wrap:wrap;gap:6px;}
-.mood-btn{padding:6px 11px;border-radius:20px;border:1.5px solid var(--warm-mid);background:var(--warm);font-size:12px;font-weight:500;color:var(--text-mid);cursor:pointer;transition:all .2s;}
-.mood-btn.selected{background:var(--navy);border-color:var(--navy);color:white;}
-
-/* Signal */
-.signal-box{border-radius:var(--radius);padding:12px 16px;margin-bottom:14px;display:flex;align-items:flex-start;gap:12px;animation:slideUp .4s ease;}
-.signal-box.breakthrough{background:var(--teal-light);border:1.5px solid #A8D5B5;}
-.signal-box.caution{background:var(--amber-bg);border:1.5px solid #F0C070;}
-.signal-box.rest{background:var(--red-bg);border:1.5px solid #E8B0A8;}
-.signal-title{font-size:13px;font-weight:600;margin-bottom:2px;}
-.signal-box.breakthrough .signal-title{color:var(--green-soft);}
-.signal-box.caution .signal-title{color:var(--amber);}
-.signal-box.rest .signal-title{color:var(--red-soft);}
-.signal-body{font-size:12px;color:var(--text-mid);line-height:1.5;}
-
-/* Action bar */
-.action-bar{background:white;border-top:1px solid var(--warm-mid);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
-.btn-back{background:transparent;border:1.5px solid var(--warm-mid);border-radius:var(--radius-xs);padding:10px 16px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;color:var(--text-mid);cursor:pointer;transition:all .2s;}
-.btn-back:hover{border-color:var(--navy);color:var(--navy);}
-.btn-primary{background:var(--navy);border:none;border-radius:var(--radius-xs);padding:11px 24px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:white;cursor:pointer;transition:all .2s;box-shadow:0 3px 12px rgba(27,42,74,.3);}
-.btn-primary:hover{background:var(--navy-light);transform:translateY(-1px);}
-.btn-primary:disabled{background:#B8C0CC;cursor:not-allowed;transform:none;box-shadow:none;}
-.btn-gold{background:linear-gradient(135deg,var(--gold),#E8A840);border:none;border-radius:var(--radius-xs);padding:11px 24px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:var(--navy);cursor:pointer;transition:all .2s;box-shadow:0 3px 12px rgba(200,151,58,.35);}
-.btn-gold:hover{transform:translateY(-1px);}
-.btn-group{display:flex;gap:8px;}
-.live-dot{width:6px;height:6px;background:#4CAF50;border-radius:50%;display:inline-block;margin-right:6px;animation:pulse 2s infinite;}
-
-/* ── AVATAR CREATOR ──────────────────────────────────── */
-.avatar-stage{
-  width:160px;height:160px;border-radius:50%;
-  background:linear-gradient(135deg,var(--purple-light),var(--teal-light));
-  margin:0 auto 18px;display:flex;align-items:center;justify-content:center;
-  position:relative;overflow:hidden;border:3px solid white;
-  box-shadow:0 8px 32px rgba(127,119,221,.3);
-  cursor:pointer;transition:transform .2s;
-}
-.avatar-stage:hover{transform:scale(1.03);}
-.avatar-canvas{width:100%;height:100%;}
-
-.avatar-section{margin-bottom:18px;}
-.avatar-section-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);margin-bottom:10px;}
-.color-swatches{display:flex;gap:8px;flex-wrap:wrap;}
-.swatch{width:32px;height:32px;border-radius:50%;cursor:pointer;transition:all .2s;border:2.5px solid transparent;}
-.swatch.selected{border-color:var(--navy);transform:scale(1.15);box-shadow:0 2px 8px rgba(0,0,0,.2);}
-.style-chips{display:flex;gap:7px;flex-wrap:wrap;}
-.style-chip{padding:7px 14px;border-radius:20px;border:1.5px solid var(--warm-mid);background:white;font-size:12px;font-weight:500;color:var(--text-mid);cursor:pointer;transition:all .2s;}
-.style-chip.selected{background:var(--navy);border-color:var(--navy);color:white;}
-.accessory-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;}
-.acc-btn{aspect-ratio:1;border-radius:var(--radius-xs);border:1.5px solid var(--warm-mid);background:white;font-size:20px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;}
-.acc-btn.selected{border-color:var(--purple);background:var(--purple-light);}
-.code-display{
-  background:var(--navy);border-radius:var(--radius);
-  padding:14px 18px;text-align:center;margin-bottom:16px;
-}
-.code-label{font-size:10px;color:rgba(200,151,58,.7);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px;}
-.code-value{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:var(--gold);letter-spacing:4px;}
-.code-sub{font-size:11px;color:rgba(255,255,255,.4);margin-top:4px;}
-.trend-badge{display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,var(--purple),var(--pink));color:white;font-size:10px;font-weight:600;padding:4px 10px;border-radius:20px;margin-bottom:10px;}
-
-/* ── HOMEWORK MODULE ─────────────────────────────────── */
-.hw-card{
-  background:white;border:1px solid var(--warm-mid);
-  border-radius:var(--radius);padding:16px 18px;margin-bottom:12px;
-  cursor:pointer;transition:all .25s;box-shadow:0 1px 6px rgba(0,0,0,.04);
-}
-.hw-card:hover{border-color:var(--navy);box-shadow:0 3px 14px rgba(27,42,74,.1);}
-.hw-card.completed{border-color:var(--teal);background:var(--teal-light);}
-.hw-card-top{display:flex;align-items:center;gap:12px;margin-bottom:8px;}
-.hw-icon{width:42px;height:42px;border-radius:var(--radius-xs);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
-.hw-subject{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--text-light);margin-bottom:2px;}
-.hw-title{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--navy);}
-.hw-card.completed .hw-title{color:var(--teal);}
-.hw-meta{display:flex;gap:12px;align-items:center;}
-.hw-tag{font-size:11px;padding:3px 10px;border-radius:20px;font-weight:500;}
-.hw-interest{background:var(--gold-pale);color:#7A4800;}
-.hw-type{background:var(--purple-light);color:var(--purple);}
-.hw-done-badge{background:var(--teal);color:white;margin-left:auto;}
-.hw-body{font-size:13px;color:var(--text-mid);line-height:1.6;padding-top:8px;border-top:1px solid var(--warm-mid);}
-.hw-explain-box{
-  background:var(--gold-pale);border-radius:var(--radius-xs);border-left:3px solid var(--gold);
-  padding:10px 14px;margin-top:10px;font-size:13px;color:var(--text);line-height:1.6;
-  font-style:italic;
-}
-.fluency-row{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;}
-.fluency-btn{
-  padding:8px 16px;border-radius:var(--radius-xs);border:1.5px solid var(--warm-mid);
-  background:white;font-size:13px;font-weight:600;color:var(--text);
-  cursor:pointer;transition:all .2s;
-}
-.fluency-btn:hover{border-color:var(--navy);}
-.fluency-btn.correct{background:var(--green-bg);border-color:var(--green-soft);color:var(--green-soft);}
-.fluency-btn.wrong{background:var(--red-bg);border-color:var(--red-soft);color:var(--red-soft);}
-.interest-selector{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px;}
-.interest-btn{
-  background:white;border:1.5px solid var(--warm-mid);border-radius:var(--radius-sm);
-  padding:12px 8px;text-align:center;cursor:pointer;transition:all .2s;
-}
-.interest-btn:hover{border-color:var(--navy);}
-.interest-btn.selected{border-color:var(--purple);background:var(--purple-light);}
-.interest-emoji{font-size:24px;display:block;margin-bottom:4px;}
-.interest-label{font-size:11px;font-weight:500;color:var(--text-mid);}
-.interest-btn.selected .interest-label{color:var(--purple);}
-
-/* ── SUMMARY GRAPH ───────────────────────────────────── */
-.graph-wrap{background:var(--navy);border-radius:var(--radius);padding:18px 20px;margin-bottom:14px;box-shadow:0 4px 20px rgba(27,42,74,.2);}
-.graph-title{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:white;margin-bottom:4px;}
-.graph-sub{font-size:11px;color:rgba(180,200,230,.6);margin-bottom:16px;}
-.graph-legend{display:flex;gap:16px;margin-bottom:14px;}
-.legend-item{display:flex;align-items:center;gap:6px;font-size:11px;color:rgba(180,200,230,.7);}
-.legend-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
-.chart-area{position:relative;height:140px;}
-canvas#summaryChart{width:100%;height:100%;}
-.summary-stats-row{display:flex;gap:0;margin-bottom:14px;}
-.summary-stat-card{flex:1;background:white;border:1px solid var(--warm-mid);padding:12px 14px;text-align:center;}
-.summary-stat-card:first-child{border-radius:var(--radius) 0 0 var(--radius);}
-.summary-stat-card:last-child{border-radius:0 var(--radius) var(--radius) 0;}
-.summary-stat-card+.summary-stat-card{border-left:none;}
-.stat-num{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:var(--navy);}
-.stat-lbl{font-size:10px;color:var(--text-light);text-transform:uppercase;letter-spacing:.06em;margin-top:2px;}
-.summary-cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
-.sum-card{background:white;border:1px solid var(--warm-mid);border-radius:var(--radius);padding:13px 15px;box-shadow:0 1px 4px rgba(0,0,0,.04);}
-.sum-card-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--text-light);margin-bottom:5px;}
-.sum-card-body{font-size:13px;color:var(--text);line-height:1.6;}
-.parent-msg{background:white;border:1px solid var(--warm-mid);border-radius:var(--radius);padding:14px 16px;box-shadow:0 1px 4px rgba(0,0,0,.04);}
-.parent-msg-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--gold);margin-bottom:7px;}
-.parent-msg-body{font-size:13px;color:var(--text);line-height:1.7;padding:10px 13px;background:var(--warm);border-radius:var(--radius-xs);font-style:italic;}
-
-/* Loading */
-.gen-box{background:linear-gradient(135deg,var(--navy),var(--navy-mid));border-radius:var(--radius);padding:28px;text-align:center;margin-bottom:16px;box-shadow:0 6px 24px rgba(27,42,74,.25);}
-.gen-spin{width:40px;height:40px;border:2.5px solid rgba(200,151,58,.2);border-top-color:var(--gold);border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 12px;}
-.gen-title{font-family:'Playfair Display',serif;font-size:17px;color:white;margin-bottom:5px;}
-.gen-sub{font-size:12px;color:rgba(180,200,230,.6);line-height:1.6;}
-.gen-steps{display:flex;flex-direction:column;gap:7px;margin-top:16px;text-align:left;}
-.gen-step{font-size:12px;color:rgba(180,200,230,.5);display:flex;align-items:center;gap:8px;}
-.gen-step.done{color:var(--gold);}
-.gen-step-dot{width:5px;height:5px;border-radius:50%;background:rgba(180,200,230,.3);flex-shrink:0;}
-.gen-step.done .gen-step-dot{background:var(--gold);}
-
-/* Plan accordion */
-.plan-overview{background:white;border:1px solid var(--warm-mid);border-radius:var(--radius);padding:12px 16px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 1px 4px rgba(0,0,0,.04);}
-.plan-ov-title{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--navy);}
-.plan-dots{display:flex;gap:5px;}
-.plan-dot{width:8px;height:8px;border-radius:50%;background:var(--warm-mid);transition:all .3s;}
-.plan-dot.active{background:var(--navy);transform:scale(1.2);}
-.plan-dot.done{background:var(--teal);}
-.plan-hdr{background:white;border:1px solid var(--warm-mid);border-radius:var(--radius);padding:13px 16px;margin-bottom:7px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:all .2s;box-shadow:0 1px 4px rgba(0,0,0,.04);user-select:none;}
-.plan-hdr:hover{border-color:var(--navy);}
-.plan-hdr.open{border-radius:var(--radius) var(--radius) 0 0;margin-bottom:0;border-color:var(--navy);border-bottom-color:transparent;}
-.plan-hdr.completed{border-color:var(--teal);background:var(--teal-light);}
-.plan-hdr-num{width:32px;height:32px;border-radius:50%;background:var(--gold-pale);border:1.5px solid var(--gold-light);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:14px;font-weight:700;color:var(--gold);flex-shrink:0;transition:all .3s;}
-.plan-hdr.completed .plan-hdr-num{background:var(--teal);border-color:var(--teal);color:white;font-family:'DM Sans',sans-serif;font-size:13px;}
-.plan-hdr-lbl{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.09em;color:var(--gold);margin-bottom:2px;}
-.plan-hdr.completed .plan-hdr-lbl{color:var(--teal);}
-.plan-hdr-title{font-family:'Playfair Display',serif;font-size:14px;font-weight:700;color:var(--navy);}
-.plan-hdr-chev{font-size:15px;color:var(--text-light);transition:transform .3s;}
-.plan-hdr.open .plan-hdr-chev{transform:rotate(180deg);}
-.plan-body{background:white;border:1px solid var(--navy);border-top:none;border-radius:0 0 var(--radius) var(--radius);margin-bottom:7px;overflow:hidden;max-height:0;transition:max-height .4s cubic-bezier(.25,.46,.45,.94);}
-.plan-body.open{max-height:700px;}
-.plan-body-inner{padding:16px 18px;}
-.flow-step{display:flex;gap:11px;padding:10px 8px;border-bottom:1px solid var(--warm-mid);cursor:pointer;transition:background .2s;border-radius:var(--radius-xs);}
+.mood-btn{padding:6px 11px;border-radius:20px;border:1.5px solid #E0D4C0;background:#F8F3EC;font-size:12px;font-weight:600;color:#4A3F30;cursor:pointer;transition:all .2s;}
+.mood-btn.sel{background:#1B2A4A;border-color:#1B2A4A;color:#fff;}
+.signal-box{border-radius:12px;padding:12px 14px;display:flex;align-items:flex-start;gap:10px;margin-top:10px;font-size:13px;line-height:1.55;}
+.sig-caution{background:#FEF5E7;border:1.5px solid #F0C070;}
+.sig-break{background:#EAF3DE;border:1.5px solid #A8D5B5;}
+.sig-rest{background:#FDECEA;border:1.5px solid #E8B0A8;}
+.plan-card{background:#fff;border:1.5px solid #E0D4C0;border-radius:12px;margin-bottom:8px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.04);}
+.plan-hdr{padding:13px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:background .2s;}
+.plan-hdr:hover{background:#F8F3EC;}
+.plan-hdr.open{background:#1B2A4A;}
+.plan-hdr.open .phdr-label{color:#C8973A;}
+.plan-hdr.open .phdr-title{color:#fff;}
+.plan-hdr.open .phdr-chev{color:rgba(255,255,255,.5);transform:rotate(180deg);}
+.phdr-num{width:30px;height:30px;border-radius:50%;background:#FDF6E8;border:1.5px solid #F5E6CC;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#C8973A;flex-shrink:0;transition:all .3s;}
+.plan-hdr.open .phdr-num{background:#C8973A;border-color:#C8973A;color:#1B2A4A;}
+.plan-hdr.completed .phdr-num{background:#1D9E75;border-color:#1D9E75;color:#fff;font-size:12px;}
+.phdr-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:#C8973A;margin-bottom:2px;}
+.phdr-title{font-size:14px;font-weight:700;color:#1B2A4A;}
+.phdr-dur{font-size:10px;color:#9A8C78;}
+.phdr-chev{font-size:14px;color:#9A8C78;transition:transform .3s;}
+.plan-body{max-height:0;overflow:hidden;transition:max-height .4s ease;}
+.plan-body.open{max-height:600px;}
+.plan-body-inner{padding:14px 16px;background:#fff;}
+.flow-step{display:flex;gap:10px;padding:10px 8px;border-bottom:1px solid #F0EAE0;cursor:pointer;border-radius:8px;transition:background .2s;}
 .flow-step:last-child{border-bottom:none;}
-.flow-step:hover{background:var(--warm);}
-.flow-step.active-step{background:var(--gold-pale);border-left:3px solid var(--gold);padding-left:12px;}
-.flow-step.done-step{opacity:.6;}
-.flow-dot{width:24px;height:24px;border-radius:50%;border:1.5px solid var(--warm-mid);background:white;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:var(--text-light);flex-shrink:0;transition:all .3s;}
-.flow-step.active-step .flow-dot{background:var(--navy);border-color:var(--navy);color:white;}
-.flow-step.done-step .flow-dot{background:var(--teal);border-color:var(--teal);color:white;}
-.flow-line{width:1.5px;flex:1;background:var(--warm-mid);min-height:16px;margin-top:4px;border-radius:2px;}
-.flow-step.done-step .flow-line{background:var(--teal);}
-.flow-step-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px;}
-.flow-step.active-step .flow-step-title{color:var(--navy);}
-.flow-step-body{font-size:12.5px;color:var(--text-mid);line-height:1.6;margin-bottom:6px;}
-.flow-note{background:var(--gold-pale);border-radius:var(--radius-xs);border-left:2.5px solid var(--gold);padding:7px 11px;font-size:12px;color:#7A5010;display:none;}
-.flow-step.active-step .flow-note{display:block;}
-.flow-actions{display:none;gap:7px;margin-top:8px;}
-.flow-step.active-step .flow-actions{display:flex;}
-.flow-btn{background:var(--navy);border:none;border-radius:var(--radius-xs);padding:7px 14px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;color:white;cursor:pointer;transition:all .2s;}
-.flow-btn:hover{background:var(--navy-light);}
-.flow-skip{background:transparent;border:1px solid var(--warm-mid);border-radius:var(--radius-xs);padding:7px 12px;font-family:'DM Sans',sans-serif;font-size:12px;color:var(--text-light);cursor:pointer;}
-.sec-complete{background:var(--teal);border-radius:var(--radius-xs);padding:9px;font-size:12px;font-weight:600;color:white;text-align:center;margin-top:10px;display:none;animation:slideUp .3s ease;}
-.sec-complete.show{display:block;}
-.tag-pill{display:inline-block;font-size:10px;font-weight:600;padding:3px 9px;border-radius:20px;margin-bottom:8px;}
-.tag-warmup{background:var(--purple-light);color:#534AB7;}
-.tag-core{background:var(--gold-light);color:#7A4800;}
-.tag-socratic{background:var(--teal-light);color:var(--teal);}
-.tag-close{background:var(--green-bg);color:var(--green-soft);}
-.prompt-chips{display:flex;flex-direction:column;gap:7px;}
-.prompt-chip{background:var(--warm);border:1px solid var(--warm-mid);border-radius:var(--radius-xs);padding:9px 13px 9px 30px;font-size:12.5px;color:var(--text);line-height:1.5;position:relative;cursor:pointer;transition:all .2s;}
-.prompt-chip:hover{border-color:var(--navy);}
-.prompt-chip::before{content:"💬";position:absolute;left:9px;top:9px;font-size:12px;}
-
+.flow-step:hover{background:#FAF6F0;}
+.flow-step.act{background:#FDF6E8;border-left:3px solid #C8973A;padding-left:12px;}
+.flow-step.done{opacity:.6;}
+.fdot{width:24px;height:24px;border-radius:50%;border:1.5px solid #E0D4C0;background:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#9A8C78;flex-shrink:0;transition:all .3s;}
+.flow-step.act .fdot{background:#1B2A4A;border-color:#1B2A4A;color:#fff;}
+.flow-step.done .fdot{background:#1D9E75;border-color:#1D9E75;color:#fff;}
+.fline{width:1.5px;flex:1;background:#E0D4C0;min-height:14px;margin-top:3px;}
+.flow-step.done .fline{background:#1D9E75;}
+.ftitle{font-size:13px;font-weight:600;color:#1A1207;margin-bottom:3px;}
+.flow-step.act .ftitle{color:#1B2A4A;}
+.fbody{font-size:12px;color:#4A3F30;line-height:1.6;margin-bottom:6px;}
+.fnote{background:#FDF6E8;border-left:2.5px solid #C8973A;padding:6px 10px;font-size:11px;color:#7A5010;display:none;}
+.flow-step.act .fnote{display:block;}
+.fbtns{display:none;gap:6px;margin-top:8px;}
+.flow-step.act .fbtns{display:flex;}
+.fbtn{background:#1B2A4A;border:none;border-radius:7px;padding:6px 13px;font-size:11px;font-weight:700;color:#fff;cursor:pointer;}
+.fskip{background:transparent;border:1px solid #E0D4C0;border-radius:7px;padding:6px 10px;font-size:11px;color:#9A8C78;cursor:pointer;}
+.sec-done{background:#1D9E75;border-radius:6px;padding:8px;font-size:11px;font-weight:700;color:#fff;text-align:center;margin-top:8px;display:none;}
+.sec-done.show{display:block;}
+.sum-hero{background:linear-gradient(135deg,#1B2A4A,#243660);border-radius:14px;padding:20px;text-align:center;margin-bottom:14px;}
+.sum-emoji{font-size:36px;margin-bottom:8px;}
+.sum-name{font-size:17px;font-weight:700;color:#fff;margin-bottom:3px;}
+.sum-date{font-size:11px;color:rgba(180,200,230,.6);margin-bottom:14px;}
+.sum-stats{display:flex;justify-content:center;gap:24px;}
+.stat-v{font-size:22px;font-weight:700;color:#C8973A;}
+.stat-l{font-size:10px;color:rgba(180,200,230,.5);margin-top:2px;}
+.sum-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
+.sum-card{background:#fff;border:1px solid #E0D4C0;border-radius:12px;padding:12px 14px;}
+.scard-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#9A8C78;margin-bottom:4px;}
+.scard-body{font-size:13px;color:#1A1207;line-height:1.6;}
+.parent-msg{background:#fff;border:1px solid #E0D4C0;border-radius:12px;padding:14px;}
+.pmsg-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#C8973A;margin-bottom:7px;}
+.pmsg-body{font-size:13px;color:#1A1207;line-height:1.7;background:#FAF6F0;padding:10px 12px;border-radius:7px;font-style:italic;}
+.gen-box{background:#1B2A4A;border-radius:12px;padding:24px;text-align:center;margin-bottom:14px;}
+.gen-spin{width:36px;height:36px;border:2.5px solid rgba(200,151,58,.2);border-top-color:#C8973A;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 12px;}
 @keyframes spin{to{transform:rotate(360deg);}}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
-@keyframes slideUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
-.fade-in{animation:fadeIn .5s ease;}
+.gen-title{font-size:15px;font-weight:700;color:#fff;margin-bottom:4px;}
+.gen-sub{font-size:11px;color:rgba(180,200,230,.5);line-height:1.6;}
+.prompt-chip{background:#FAF6F0;border:1px solid #E0D4C0;border-radius:7px;padding:8px 11px 8px 28px;font-size:12px;color:#1A1207;line-height:1.5;position:relative;cursor:pointer;margin-bottom:6px;transition:all .2s;}
+.prompt-chip:hover{border-color:#1B2A4A;}
+.prompt-chip::before{content:"💬";position:absolute;left:8px;top:8px;font-size:11px;}
+.btn-primary{background:#1B2A4A;border:none;border-radius:9px;padding:11px 22px;font-size:13px;font-weight:700;color:#fff;cursor:pointer;transition:all .2s;margin-top:8px;}
+.btn-gold{background:linear-gradient(135deg,#C8973A,#E8A840);border:none;border-radius:9px;padding:11px 22px;font-size:13px;font-weight:700;color:#1B2A4A;cursor:pointer;transition:all .2s;margin-top:8px;}
+.section-eyebrow{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#C8973A;margin-bottom:3px;}
+.section-title{font-size:20px;font-weight:700;color:#1B2A4A;margin-bottom:4px;}
+.section-sub{font-size:13px;color:#4A3F30;line-height:1.6;margin-bottom:14px;}
+.sess-right-title{font-size:16px;font-weight:700;color:#1B2A4A;margin-bottom:4px;}
+.sess-right-sub{font-size:12px;color:#9A8C78;margin-bottom:16px;line-height:1.5;}
+canvas{width:100%;height:140px;display:block;}
 </style>
 </head>
 <body>
-<div class="ipad-frame">
-  <div class="ipad-screen">
-
-    <!-- ── SCREEN: AVATAR CREATOR ─────────────────────── -->
-    <div class="screen active" id="screen-avatar">
-      <div class="topbar">
-        <div class="logo-wrap">
-          <svg class="logo-svg" viewBox="0 0 34 34" fill="none">
-            <rect x="5" y="15" width="24" height="16" rx="2" fill="#C8973A"/>
-            <path d="M5 15 Q17 11 29 15 L29 19 Q17 15 5 19 Z" fill="#D4A84A"/>
-            <rect x="5" y="15" width="5" height="16" rx="2" fill="#D4A84A" opacity="0.5"/>
-            <path d="M17 13 C11 7 5 9 7 13 C9 17 15 15 17 13Z" fill="#7F77DD" opacity="0.9"/>
-            <path d="M17 13 C23 7 29 9 27 13 C25 17 19 15 17 13Z" fill="#7F77DD" opacity="0.9"/>
-            <ellipse cx="17" cy="16" rx="1" ry="4.5" fill="#26215C"/>
-            <path d="M9 7 C5 3 1 5 3 7 C4 9 8 8 9 7Z" fill="#EF9F27" opacity="0.85"/>
-            <path d="M9 7 C13 3 15 5 13 7 C12 9 10 8 9 7Z" fill="#EF9F27" opacity="0.85"/>
-            <ellipse cx="9" cy="8.5" rx="0.7" ry="2.8" fill="#412402"/>
-            <path d="M25 5 C21 1 17 3 19 6 C20 8 24 7 25 5Z" fill="#1D9E75" opacity="0.85"/>
-            <path d="M25 5 C29 1 33 3 31 6 C30 8 26 7 25 5Z" fill="#1D9E75" opacity="0.85"/>
-            <ellipse cx="25" cy="6.5" rx="0.6" ry="2.3" fill="#04342C"/>
-          </svg>
-          <div>
-            <div class="logo-name">Brown<em>Bag</em></div>
-            <div class="logo-sub-text">Whole-child learning</div>
-          </div>
-        </div>
-        <div class="topbar-right">
-          <span class="topbar-time" id="clock-av"></span>
-          <div class="topbar-avatar">🦋</div>
+<div class="nav">
+  <div class="nav-logo">Brown<em>Bag</em></div>
+  <div class="nav-tab active" onclick="switchScreen('avatar')">My Avatar</div>
+  <div class="nav-tab" onclick="switchScreen('session')">Tutor Session</div>
+</div>
+<div class="screen active" id="screen-avatar">
+  <div class="av-layout">
+    <div class="av-stage">
+      <div class="av-glow"></div>
+      <div class="av-code">BB-4729</div>
+      <div class="av-scene" id="avScene">
+        <div class="av-body-wrap" id="avBodyWrap">
+          <div class="av-leg l" id="legL" style="background:#1B2A4A;"></div>
+          <div class="av-leg r" id="legR" style="background:#1B2A4A;"></div>
+          <div class="av-foot l"></div>
+          <div class="av-foot r"></div>
+          <div class="av-body" id="avBody" style="background:#1B2A4A;"></div>
+          <div class="av-stripe" id="avStripe" style="background:#C8973A;"></div>
+          <div class="av-arm l" id="armL" style="background:#1B2A4A;"></div>
+          <div class="av-arm r" id="armR" style="background:#1B2A4A;"></div>
+          <div class="av-head" id="avHead" style="background:#FDDBB4;"></div>
+          <div class="av-cheek l"></div>
+          <div class="av-cheek r"></div>
+          <div class="av-eye l"><div class="av-pupil"></div><div class="av-shine"></div></div>
+          <div class="av-eye r"><div class="av-pupil"></div><div class="av-shine"></div></div>
+          <div class="av-smile"></div>
+          <div class="av-hair" id="avHair"></div>
+          <div class="av-acc" id="avAcc">🦋</div>
         </div>
       </div>
-      <div class="nav-tabs">
-        <div class="nav-tab active" onclick="showTab('avatar')">My Avatar</div>
-        <div class="nav-tab" onclick="showTab('checkin')">Check-In</div>
-        <div class="nav-tab" onclick="showTab('lesson')">Lesson Plan</div>
-        <div class="nav-tab" onclick="showTab('homework')">Homework</div>
-        <div class="nav-tab" onclick="showTab('summary')">Summary</div>
-      </div>
-      <div class="screen-content" id="tab-avatar">
-
-        <p class="sec-eyebrow">Your Identity</p>
-        <h1 class="sec-title">Create Your Avatar</h1>
-        <p class="sec-sub">This is your Brown Bag self. No real name needed — just your code and your character.</p>
-
-        <div class="code-display">
-          <div class="code-label">Your Private Code</div>
-          <div class="code-value" id="student-code">BB-4729</div>
-          <div class="code-sub">Only you and your tutor know this. Your real name never appears in our system.</div>
-        </div>
-
-        <!-- Live avatar canvas -->
-        <div class="avatar-stage" onclick="randomizeAvatar()">
-          <canvas id="avatarCanvas" width="160" height="160"></canvas>
-        </div>
-        <p style="text-align:center;font-size:11px;color:var(--text-light);margin-bottom:18px;">Tap to randomize · Customize below</p>
-
-        <!-- Skin tone -->
-        <div class="avatar-section">
-          <div class="trend-badge">✦ Trending Now</div>
-          <div class="avatar-section-label">Skin Tone</div>
-          <div class="color-swatches" id="skin-swatches">
-            <div class="swatch selected" style="background:#FDDBB4" onclick="setSkin('#FDDBB4',this)"></div>
-            <div class="swatch" style="background:#F0C27F" onclick="setSkin('#F0C27F',this)"></div>
-            <div class="swatch" style="background:#D4A574" onclick="setSkin('#D4A574',this)"></div>
-            <div class="swatch" style="background:#C68642" onclick="setSkin('#C68642',this)"></div>
-            <div class="swatch" style="background:#8D5524" onclick="setSkin('#8D5524',this)"></div>
-            <div class="swatch" style="background:#4A3728" onclick="setSkin('#4A3728',this)"></div>
-          </div>
-        </div>
-
-        <!-- Hair style -->
-        <div class="avatar-section">
-          <div class="avatar-section-label">Hair Style</div>
-          <div class="style-chips" id="hair-style">
-            <div class="style-chip selected" onclick="setHair('afro',this)">Afro</div>
-            <div class="style-chip" onclick="setHair('locs',this)">Locs</div>
-            <div class="style-chip" onclick="setHair('braids',this)">Braids</div>
-            <div class="style-chip" onclick="setHair('curly',this)">Curly</div>
-            <div class="style-chip" onclick="setHair('straight',this)">Straight</div>
-            <div class="style-chip" onclick="setHair('bun',this)">Bun</div>
-            <div class="style-chip" onclick="setHair('fade',this)">Fade</div>
-          </div>
-        </div>
-
-        <!-- Hair color -->
-        <div class="avatar-section">
-          <div class="avatar-section-label">Hair Color</div>
-          <div class="color-swatches" id="hair-swatches">
-            <div class="swatch selected" style="background:#1A0A00" onclick="setHairColor('#1A0A00',this)"></div>
-            <div class="swatch" style="background:#4A2800" onclick="setHairColor('#4A2800',this)"></div>
-            <div class="swatch" style="background:#8B4513" onclick="setHairColor('#8B4513',this)"></div>
-            <div class="swatch" style="background:#D4A017" onclick="setHairColor('#D4A017',this)"></div>
-            <div class="swatch" style="background:#E040FB" onclick="setHairColor('#E040FB',this)"></div>
-            <div class="swatch" style="background:#00BCD4" onclick="setHairColor('#00BCD4',this)"></div>
-            <div class="swatch" style="background:#FF5722" onclick="setHairColor('#FF5722',this)"></div>
-            <div class="swatch" style="background:#E0E0E0" onclick="setHairColor('#E0E0E0',this)"></div>
-          </div>
-        </div>
-
-        <!-- Accessories / vibe — trending styles -->
-        <div class="avatar-section">
-          <div class="avatar-section-label">Vibe & Accessories</div>
-          <div class="style-chips" id="vibe-chips" style="margin-bottom:10px;">
-            <div class="style-chip selected" onclick="setVibe('default',this)">Clean</div>
-            <div class="style-chip" onclick="setVibe('glasses',this)">Glasses</div>
-            <div class="style-chip" onclick="setVibe('cap',this)">Cap</div>
-            <div class="style-chip" onclick="setVibe('crown',this)">Crown 👑</div>
-            <div class="style-chip" onclick="setVibe('headphones',this)">Headphones</div>
-            <div class="style-chip" onclick="setVibe('flowers',this)">Flowers 🌸</div>
-          </div>
-          <div class="accessory-grid">
-            <button class="acc-btn selected" id="acc-butterfly" onclick="toggleAcc('butterfly',this)" title="Butterfly">🦋</button>
-            <button class="acc-btn" id="acc-star" onclick="toggleAcc('star',this)" title="Star">⭐</button>
-            <button class="acc-btn" id="acc-lightning" onclick="toggleAcc('lightning',this)" title="Energy">⚡</button>
-            <button class="acc-btn" id="acc-heart" onclick="toggleAcc('heart',this)" title="Heart">💛</button>
-            <button class="acc-btn" id="acc-book" onclick="toggleAcc('book',this)" title="Bookworm">📚</button>
-          </div>
-        </div>
-
-        <!-- Background -->
-        <div class="avatar-section">
-          <div class="avatar-section-label">Background Vibe</div>
-          <div class="color-swatches" id="bg-swatches">
-            <div class="swatch selected" style="background:linear-gradient(135deg,#EEEDFE,#E1F5EE)" onclick="setBg(['#EEEDFE','#E1F5EE'],this)"></div>
-            <div class="swatch" style="background:linear-gradient(135deg,#FAEEDA,#FAECE7)" onclick="setBg(['#FAEEDA','#FAECE7'],this)"></div>
-            <div class="swatch" style="background:linear-gradient(135deg,#1B2A4A,#2E4480)" onclick="setBg(['#1B2A4A','#2E4480'],this)"></div>
-            <div class="swatch" style="background:linear-gradient(135deg,#E1F5EE,#EAF3DE)" onclick="setBg(['#E1F5EE','#EAF3DE'],this)"></div>
-            <div class="swatch" style="background:linear-gradient(135deg,#FBEAF0,#EEEDFE)" onclick="setBg(['#FBEAF0','#EEEDFE'],this)"></div>
-            <div class="swatch" style="background:linear-gradient(135deg,#F5E6CC,#FDF6E8)" onclick="setBg(['#F5E6CC','#FDF6E8'],this)"></div>
-          </div>
-        </div>
-
-      </div>
-      <div class="action-bar">
-        <div style="font-size:12px;color:var(--text-light);">Tap the avatar to randomize</div>
-        <button class="btn-primary" onclick="showTab('checkin')">Save Avatar → Check-In</button>
-      </div>
+      <div class="av-hint">Drag to spin 360°</div>
+      <button style="margin-top:12px;background:linear-gradient(135deg,#7F77DD,#E040FB);border:none;border-radius:10px;padding:10px 24px;font-size:13px;font-weight:800;color:white;cursor:pointer;" onclick="randomize()">🎲 Randomize</button>
     </div>
-
-    <!-- ── SCREEN: CHECK-IN (TAB VIEW) ───────────────── -->
-    <div class="screen" id="screen-checkin">
-      <div class="topbar">
-        <div class="logo-wrap">
-          <svg class="logo-svg" viewBox="0 0 34 34" fill="none"><rect x="5" y="15" width="24" height="16" rx="2" fill="#C8973A"/><path d="M5 15 Q17 11 29 15 L29 19 Q17 15 5 19 Z" fill="#D4A84A"/><path d="M17 13 C11 7 5 9 7 13 C9 17 15 15 17 13Z" fill="#7F77DD" opacity="0.9"/><path d="M17 13 C23 7 29 9 27 13 C25 17 19 15 17 13Z" fill="#7F77DD" opacity="0.9"/><ellipse cx="17" cy="16" rx="1" ry="4.5" fill="#26215C"/></svg>
-          <div><div class="logo-name">Brown<em>Bag</em></div><div class="logo-sub-text">Whole-child learning</div></div>
+    <div class="av-panel">
+      <div class="av-tabs">
+        <button class="av-tabBtn active" onclick="avTab('skin')">Skin</button>
+        <button class="av-tabBtn" onclick="avTab('hair')">Hair</button>
+        <button class="av-tabBtn" onclick="avTab('outfit')">Outfit</button>
+        <button class="av-tabBtn" onclick="avTab('badges')">Badges</button>
+      </div>
+      <div class="av-section active" id="sec-skin">
+        <div class="av-lbl">Skin tone</div>
+        <div class="sw-row" id="sw-skin">
+          <div class="sw sel" style="background:#FDDBB4;" onclick="setSkin('#FDDBB4',this)"></div>
+          <div class="sw" style="background:#F0C27F;" onclick="setSkin('#F0C27F',this)"></div>
+          <div class="sw" style="background:#C68642;" onclick="setSkin('#C68642',this)"></div>
+          <div class="sw" style="background:#8D5524;" onclick="setSkin('#8D5524',this)"></div>
+          <div class="sw" style="background:#4A3728;" onclick="setSkin('#4A3728',this)"></div>
+          <div class="sw" style="background:#8EC5FC;" onclick="setSkin('#8EC5FC',this)"></div>
+          <div class="sw" style="background:#A8E063;" onclick="setSkin('#A8E063',this)"></div>
+          <div class="sw" style="background:#E040FB;" onclick="setSkin('#E040FB',this)"></div>
         </div>
-        <div class="topbar-right">
-          <span class="topbar-time" id="clock-ci"></span>
-          <div class="topbar-avatar-wrap" onclick="showTab('avatar')">
-            <canvas class="avatar-canvas-small" id="avatarSmall"></canvas>
-          </div>
+        <div class="av-lbl">Eyes</div>
+        <div class="chip-row" id="eye-row">
+          <div class="chip sel" onclick="setEye('round',this)">Round</div>
+          <div class="chip" onclick="setEye('star',this)">Star ⭐</div>
+          <div class="chip" onclick="setEye('heart',this)">Heart ♥</div>
+          <div class="chip" onclick="setEye('cool',this)">Shades 😎</div>
+          <div class="chip" onclick="setEye('sleepy',this)">Chill 😴</div>
         </div>
       </div>
-      <div class="nav-tabs">
-        <div class="nav-tab done" onclick="showTab('avatar')">My Avatar</div>
-        <div class="nav-tab active" onclick="showTab('checkin')">Check-In</div>
-        <div class="nav-tab" onclick="showTab('lesson')">Lesson Plan</div>
-        <div class="nav-tab" onclick="showTab('homework')">Homework</div>
-        <div class="nav-tab" onclick="showTab('summary')">Summary</div>
-      </div>
-      <div class="screen-content">
-        <p class="sec-eyebrow">Today's Session</p>
-        <h1 class="sec-title">How are you today?</h1>
-        <p class="sec-sub">Be honest — this shapes everything about your session today.</p>
-        <div class="student-card">
-          <canvas class="student-avatar-large" id="avatarStudentCard" width="52" height="52"></canvas>
-          <div style="flex:1">
-            <div class="student-name">BB-4729</div>
-            <div class="student-meta"><span>🎂 Age 11</span><span>📚 6th Grade</span><span>📅 Session #14</span></div>
-          </div>
-          <div class="student-tag">⚕️ UCSF Benioff · Day 18</div>
+      <div class="av-section" id="sec-hair">
+        <div class="av-lbl">Style</div>
+        <div class="chip-row" id="hair-row">
+          <div class="chip sel" onclick="setHairStyle('afro',this)">Afro</div>
+          <div class="chip" onclick="setHairStyle('locs',this)">Locs</div>
+          <div class="chip" onclick="setHairStyle('braids',this)">Braids</div>
+          <div class="chip" onclick="setHairStyle('fade',this)">Fade</div>
+          <div class="chip" onclick="setHairStyle('curly',this)">Curly</div>
+          <div class="chip" onclick="setHairStyle('bun',this)">Bun</div>
+          <div class="chip" onclick="setHairStyle('bald',this)">Clean</div>
         </div>
-        <div class="checkin-grid">
-          <div class="card"><div class="card-label">⚡ Energy Level</div><div class="scale-row" id="energy-scale"><button class="scale-btn" onclick="selectScale('energy',1,'red')">1</button><button class="scale-btn" onclick="selectScale('energy',2,'red')">2</button><button class="scale-btn selected-amber" onclick="selectScale('energy',3,'amber')">3</button><button class="scale-btn" onclick="selectScale('energy',4,'green')">4</button><button class="scale-btn" onclick="selectScale('energy',5,'green')">5</button></div></div>
-          <div class="card"><div class="card-label">🩹 Pain Level</div><div class="scale-row" id="pain-scale"><button class="scale-btn" onclick="selectScale('pain',1,'green')">1</button><button class="scale-btn selected-green" onclick="selectScale('pain',2,'green')">2</button><button class="scale-btn" onclick="selectScale('pain',3,'amber')">3</button><button class="scale-btn" onclick="selectScale('pain',4,'red')">4</button><button class="scale-btn" onclick="selectScale('pain',5,'red')">5</button></div></div>
-          <div class="card" style="grid-column:span 2"><div class="card-label">💬 Mood Right Now</div><div class="mood-row" id="mood-row"><button class="mood-btn" onclick="selectMood(this)">😴 Tired</button><button class="mood-btn selected" onclick="selectMood(this)">😟 Anxious</button><button class="mood-btn" onclick="selectMood(this)">😐 Okay</button><button class="mood-btn" onclick="selectMood(this)">😊 Good</button><button class="mood-btn" onclick="selectMood(this)">🤩 Excited</button><button class="mood-btn" onclick="selectMood(this)">😤 Frustrated</button></div></div>
+        <div class="av-lbl">Color</div>
+        <div class="sw-row" id="sw-hair">
+          <div class="sw sel" style="background:#1A0A00;" onclick="setHairColor('#1A0A00',this)"></div>
+          <div class="sw" style="background:#4A2800;" onclick="setHairColor('#4A2800',this)"></div>
+          <div class="sw" style="background:#C68642;" onclick="setHairColor('#C68642',this)"></div>
+          <div class="sw" style="background:#E0E0E0;" onclick="setHairColor('#E0E0E0',this)"></div>
+          <div class="sw" style="background:#FF1744;" onclick="setHairColor('#FF1744',this)"></div>
+          <div class="sw" style="background:#E040FB;" onclick="setHairColor('#E040FB',this)"></div>
+          <div class="sw" style="background:#00BCD4;" onclick="setHairColor('#00BCD4',this)"></div>
+          <div class="sw" style="background:#FFD740;" onclick="setHairColor('#FFD740',this)"></div>
         </div>
-        <div id="signal-output"><div class="signal-box caution"><div style="font-size:20px;flex-shrink:0;margin-top:1px;">⚠️</div><div><div class="signal-title">Calibrated Session</div><div class="signal-body">Moderate energy, some anxiety. Your tutor will start with connection before any new concepts today.</div></div></div></div>
-        <div class="card"><div class="card-label">📋 Anything else? (Optional)</div><textarea id="nurse-note" style="width:100%;border:none;background:transparent;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);resize:none;outline:none;line-height:1.6;" rows="2">Got pain meds at 9am. Slept okay. Mom says I'm nervous about falling behind.</textarea></div>
       </div>
-      <div class="action-bar">
-        <div style="font-size:12px;color:var(--text-light);"><span class="live-dot"></span>Saving</div>
-        <button class="btn-primary" onclick="generateLesson()">Generate My Lesson Plan →</button>
+      <div class="av-section" id="sec-outfit">
+        <div class="av-lbl">Outfit</div>
+        <div class="outfit-grid" id="outfit-grid">
+          <div class="outfit-card sel" onclick="setOutfit('#1B2A4A','#C8973A',this)"><div class="outfit-swatch" style="background:linear-gradient(135deg,#1B2A4A,#2E4480);"></div><div><div class="outfit-name">Navy Drip</div><div class="outfit-sub">Classic</div></div></div>
+          <div class="outfit-card" onclick="setOutfit('#D85A30','#FF8A65',this)"><div class="outfit-swatch" style="background:linear-gradient(135deg,#D85A30,#FF8A65);"></div><div><div class="outfit-name">Flame Up</div><div class="outfit-sub">Athletic</div></div></div>
+          <div class="outfit-card" onclick="setOutfit('#7F77DD','#E040FB',this)"><div class="outfit-swatch" style="background:linear-gradient(135deg,#7F77DD,#E040FB);"></div><div><div class="outfit-name">Galaxy</div><div class="outfit-sub">Cosmic</div></div></div>
+          <div class="outfit-card" onclick="setOutfit('#1D9E75','#A8E063',this)"><div class="outfit-swatch" style="background:linear-gradient(135deg,#1D9E75,#A8E063);"></div><div><div class="outfit-name">Forest</div><div class="outfit-sub">Fresh</div></div></div>
+          <div class="outfit-card" onclick="setOutfit('#FF1744','#FFD740',this)"><div class="outfit-swatch" style="background:linear-gradient(135deg,#FF1744,#FFD740);"></div><div><div class="outfit-name">Fire &amp; Ice</div><div class="outfit-sub">Bold</div></div></div>
+          <div class="outfit-card" onclick="setOutfit('#C8973A','#FFF9C4',this)"><div class="outfit-swatch" style="background:linear-gradient(135deg,#C8973A,#FFF9C4);"></div><div><div class="outfit-name">Gold Rush</div><div class="outfit-sub">Legendary</div></div></div>
+        </div>
+        <div class="av-lbl">Accessory</div>
+        <div class="chip-row" id="acc-row">
+          <div class="chip sel" onclick="setAcc('🦋',this)">🦋 Butterfly</div>
+          <div class="chip" onclick="setAcc('👑',this)">👑 Crown</div>
+          <div class="chip" onclick="setAcc('🎧',this)">🎧 Beats</div>
+          <div class="chip" onclick="setAcc('⭐',this)">⭐ Star</div>
+          <div class="chip" onclick="setAcc('',this)">✨ Clean</div>
+        </div>
       </div>
+      <div class="av-section" id="sec-badges">
+        <div class="zero-msg"><p>🦋</p><p>You start at zero. Every badge is earned through sessions and breakthroughs. Your first one is waiting.</p></div>
+        <div class="badge-grid">
+          <div class="badge-item"><span class="badge-emoji">🦋</span><div class="badge-name">First Wing</div></div>
+          <div class="badge-item"><span class="badge-emoji">⚡</span><div class="badge-name">Spark</div></div>
+          <div class="badge-item"><span class="badge-emoji">🏀</span><div class="badge-name">Baller</div></div>
+          <div class="badge-item"><span class="badge-emoji">🧠</span><div class="badge-name">Deep Think</div></div>
+          <div class="badge-item"><span class="badge-emoji">🔥</span><div class="badge-name">On Fire</div></div>
+          <div class="badge-item"><span class="badge-emoji">🚀</span><div class="badge-name">Breakthrough</div></div>
+          <div class="badge-item"><span class="badge-emoji">💎</span><div class="badge-name">Diamond</div></div>
+          <div class="badge-item"><span class="badge-emoji">🏆</span><div class="badge-name">Champion</div></div>
+        </div>
+      </div>
+      <button class="av-save" onclick="switchScreen('session')">Save Avatar → Go to Session</button>
     </div>
-
-    <!-- ── SCREEN: LESSON PLAN ────────────────────────── -->
-    <div class="screen" id="screen-lesson">
-      <div class="topbar">
-        <div class="logo-wrap"><svg class="logo-svg" viewBox="0 0 34 34" fill="none"><rect x="5" y="15" width="24" height="16" rx="2" fill="#C8973A"/><path d="M5 15 Q17 11 29 15 L29 19 Q17 15 5 19 Z" fill="#D4A84A"/><path d="M17 13 C11 7 5 9 7 13 C9 17 15 15 17 13Z" fill="#7F77DD" opacity="0.9"/><path d="M17 13 C23 7 29 9 27 13 C25 17 19 15 17 13Z" fill="#7F77DD" opacity="0.9"/><ellipse cx="17" cy="16" rx="1" ry="4.5" fill="#26215C"/></svg><div><div class="logo-name">Brown<em>Bag</em></div><div class="logo-sub-text">Whole-child learning</div></div></div>
-        <div class="topbar-right"><span class="topbar-time" id="clock-ls"></span><canvas class="avatar-canvas-small" id="avatarLesson" width="34" height="34" onclick="showTab('avatar')" style="cursor:pointer;"></canvas></div>
-      </div>
-      <div class="nav-tabs">
-        <div class="nav-tab done" onclick="showTab('avatar')">My Avatar</div>
-        <div class="nav-tab done" onclick="showTab('checkin')">Check-In</div>
-        <div class="nav-tab active" onclick="showTab('lesson')">Lesson Plan</div>
-        <div class="nav-tab" onclick="showTab('homework')">Homework</div>
-        <div class="nav-tab" onclick="showTab('summary')">Summary</div>
-      </div>
-      <div class="screen-content" id="lesson-content"></div>
-      <div class="action-bar">
-        <button class="btn-back" onclick="showTab('checkin')">← Check-In</button>
-        <button class="btn-primary" id="hw-btn" onclick="showTab('homework')" disabled>Done → Homework</button>
-      </div>
-    </div>
-
-    <!-- ── SCREEN: HOMEWORK ───────────────────────────── -->
-    <div class="screen" id="screen-homework">
-      <div class="topbar">
-        <div class="logo-wrap"><svg class="logo-svg" viewBox="0 0 34 34" fill="none"><rect x="5" y="15" width="24" height="16" rx="2" fill="#C8973A"/><path d="M5 15 Q17 11 29 15 L29 19 Q17 15 5 19 Z" fill="#D4A84A"/><path d="M17 13 C11 7 5 9 7 13 C9 17 15 15 17 13Z" fill="#7F77DD" opacity="0.9"/><path d="M17 13 C23 7 29 9 27 13 C25 17 19 15 17 13Z" fill="#7F77DD" opacity="0.9"/><ellipse cx="17" cy="16" rx="1" ry="4.5" fill="#26215C"/></svg><div><div class="logo-name">Brown<em>Bag</em></div><div class="logo-sub-text">Whole-child learning</div></div></div>
-        <div class="topbar-right"><span class="topbar-time" id="clock-hw"></span><canvas class="avatar-canvas-small" id="avatarHW" width="34" height="34" onclick="showTab('avatar')" style="cursor:pointer;"></canvas></div>
-      </div>
-      <div class="nav-tabs">
-        <div class="nav-tab done" onclick="showTab('avatar')">My Avatar</div>
-        <div class="nav-tab done" onclick="showTab('checkin')">Check-In</div>
-        <div class="nav-tab done" onclick="showTab('lesson')">Lesson Plan</div>
-        <div class="nav-tab active" onclick="showTab('homework')">Homework</div>
-        <div class="nav-tab" onclick="showTab('summary')">Summary</div>
-      </div>
-      <div class="screen-content">
-        <p class="sec-eyebrow">Between Sessions</p>
-        <h1 class="sec-title">Your Homework</h1>
-        <p class="sec-sub">Based on what you love and where you started. Explain it back in your own words — that's the whole point.</p>
-
-        <!-- Interest selector -->
-        <div class="card" style="margin-bottom:14px;">
-          <div class="card-label">🎯 What Are You Into? (teaches us about you)</div>
-          <div class="interest-selector" id="interest-selector">
-            <div class="interest-btn selected" onclick="selectInterest('sports',this)"><span class="interest-emoji">🏀</span><span class="interest-label">Sports</span></div>
-            <div class="interest-btn" onclick="selectInterest('music',this)"><span class="interest-emoji">🎵</span><span class="interest-label">Music</span></div>
-            <div class="interest-btn" onclick="selectInterest('food',this)"><span class="interest-emoji">🍕</span><span class="interest-label">Food</span></div>
-            <div class="interest-btn" onclick="selectInterest('gaming',this)"><span class="interest-emoji">🎮</span><span class="interest-label">Gaming</span></div>
-            <div class="interest-btn" onclick="selectInterest('art',this)"><span class="interest-emoji">🎨</span><span class="interest-label">Art</span></div>
-            <div class="interest-btn" onclick="selectInterest('animals',this)"><span class="interest-emoji">🐶</span><span class="interest-label">Animals</span></div>
-          </div>
-        </div>
-
-        <!-- HW cards -->
-        <div id="hw-cards">
-          <!-- Card 1 - interest based -->
-          <div class="hw-card" id="hw1" onclick="toggleHW('hw1')">
-            <div class="hw-card-top">
-              <div class="hw-icon" style="background:var(--amber-bg);">🏀</div>
-              <div style="flex:1">
-                <div class="hw-subject">Math · Fractions</div>
-                <div class="hw-title">The Shot Clock Problem</div>
-              </div>
-            </div>
-            <div class="hw-meta">
-              <span class="hw-tag hw-interest">Sports interest</span>
-              <span class="hw-tag hw-type">Explain it back</span>
-            </div>
-            <div class="hw-body" id="hw1-body" style="display:none;">
-              A basketball player made 3 out of 4 free throws. Write that two ways — as a fraction AND as a division problem. Then explain to someone at home: are these the same thing? How do you know?
-              <div class="hw-explain-box">✍️ Explain it back: "A fraction is the same as division because..."</div>
-            </div>
-          </div>
-
-          <!-- Card 2 - fact fluency -->
-          <div class="hw-card" id="hw2" onclick="toggleHW('hw2')">
-            <div class="hw-card-top">
-              <div class="hw-icon" style="background:var(--teal-light);">⚡</div>
-              <div style="flex:1">
-                <div class="hw-subject">Fact Fluency Check</div>
-                <div class="hw-title">Times Table Sprint</div>
-              </div>
-            </div>
-            <div class="hw-meta">
-              <span class="hw-tag hw-type">Fluency</span>
-            </div>
-            <div class="hw-body" id="hw2-body" style="display:none;">
-              Quick fire — tap the right answer. No counting, just thinking.
-              <div class="fluency-row" id="fluency-q1">
-                <span style="font-size:15px;font-weight:600;color:var(--navy);align-self:center;">7 × 8 = ?</span>
-                <button class="fluency-btn" onclick="checkFluency('q1',54,this)">54</button>
-                <button class="fluency-btn" onclick="checkFluency('q1',56,this)">56</button>
-                <button class="fluency-btn" onclick="checkFluency('q1',48,this)">48</button>
-                <button class="fluency-btn" onclick="checkFluency('q1',63,this)">63</button>
-              </div>
-              <div class="fluency-row" id="fluency-q2" style="margin-top:8px;">
-                <span style="font-size:15px;font-weight:600;color:var(--navy);align-self:center;">6 × 9 = ?</span>
-                <button class="fluency-btn" onclick="checkFluency('q2',54,this)">54</button>
-                <button class="fluency-btn" onclick="checkFluency('q2',45,this)">45</button>
-                <button class="fluency-btn" onclick="checkFluency('q2',63,this)">63</button>
-                <button class="fluency-btn" onclick="checkFluency('q2',48,this)">48</button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Card 3 - creative extension -->
-          <div class="hw-card" id="hw3" onclick="toggleHW('hw3')">
-            <div class="hw-card-top">
-              <div class="hw-icon" style="background:var(--purple-light);">🎨</div>
-              <div style="flex:1">
-                <div class="hw-subject">Creative Extension</div>
-                <div class="hw-title">Draw the Pattern</div>
-              </div>
-            </div>
-            <div class="hw-meta">
-              <span class="hw-tag hw-interest">Visual learner</span>
-              <span class="hw-tag hw-type">Creative</span>
-            </div>
-            <div class="hw-body" id="hw3-body" style="display:none;">
-              Draw 2 pictures that show the same fraction — one using pizza, one using something you choose. Write the fraction under each drawing. The goal: show that a fraction is just a way of describing equal parts of anything.
-              <div class="hw-explain-box">✍️ What did you draw? Tell your tutor next session what you picked and why.</div>
-            </div>
-          </div>
-        </div>
-
-        <div style="background:var(--teal-light);border:1px solid #A8D5C5;border-radius:var(--radius);padding:12px 16px;margin-top:4px;">
-          <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--teal);margin-bottom:4px;">🔄 How this teaches us about you</div>
-          <div style="font-size:12.5px;color:var(--text-mid);line-height:1.6;">Every homework response — what you picked, how long it took, how you explained it — helps the AI build a better lesson plan for your next session. The more you do, the more personalized it gets.</div>
-        </div>
-      </div>
-      <div class="action-bar">
-        <button class="btn-back" onclick="showTab('lesson')">← Lesson</button>
-        <button class="btn-primary" onclick="showTab('summary')">Done → Summary</button>
-      </div>
-    </div>
-
-    <!-- ── SCREEN: SUMMARY WITH GRAPH ────────────────── -->
-    <div class="screen" id="screen-summary">
-      <div class="topbar">
-        <div class="logo-wrap"><svg class="logo-svg" viewBox="0 0 34 34" fill="none"><rect x="5" y="15" width="24" height="16" rx="2" fill="#C8973A"/><path d="M5 15 Q17 11 29 15 L29 19 Q17 15 5 19 Z" fill="#D4A84A"/><path d="M17 13 C11 7 5 9 7 13 C9 17 15 15 17 13Z" fill="#7F77DD" opacity="0.9"/><path d="M17 13 C23 7 29 9 27 13 C25 17 19 15 17 13Z" fill="#7F77DD" opacity="0.9"/><ellipse cx="17" cy="16" rx="1" ry="4.5" fill="#26215C"/></svg><div><div class="logo-name">Brown<em>Bag</em></div><div class="logo-sub-text">Whole-child learning</div></div></div>
-        <div class="topbar-right"><span class="topbar-time" id="clock-sm"></span><canvas class="avatar-canvas-small" id="avatarSummary" width="34" height="34" onclick="showTab('avatar')" style="cursor:pointer;"></canvas></div>
-      </div>
-      <div class="nav-tabs">
-        <div class="nav-tab done" onclick="showTab('avatar')">My Avatar</div>
-        <div class="nav-tab done" onclick="showTab('checkin')">Check-In</div>
-        <div class="nav-tab done" onclick="showTab('lesson')">Lesson Plan</div>
-        <div class="nav-tab done" onclick="showTab('homework')">Homework</div>
-        <div class="nav-tab active" onclick="showTab('summary')">Summary</div>
-      </div>
-      <div class="screen-content">
-        <!-- Progress Graph -->
-        <div class="graph-wrap">
-          <div class="graph-title">Marcus's Progress — Last 14 Sessions</div>
-          <div class="graph-sub">Energy · Breakthroughs · Struggle patterns</div>
-          <div class="graph-legend">
-            <div class="legend-item"><div class="legend-dot" style="background:#C8973A;"></div>Energy</div>
-            <div class="legend-item"><div class="legend-dot" style="background:#7F77DD;"></div>Breakthroughs</div>
-            <div class="legend-item"><div class="legend-dot" style="background:#1D9E75;"></div>Engagement</div>
-          </div>
-          <div class="chart-area">
-            <canvas id="summaryChart"></canvas>
-          </div>
-        </div>
-
-        <!-- Stats row -->
-        <div class="summary-stats-row">
-          <div class="summary-stat-card"><div class="stat-num">14</div><div class="stat-lbl">Sessions</div></div>
-          <div class="summary-stat-card"><div class="stat-num">8</div><div class="stat-lbl">Breakthroughs</div></div>
-          <div class="summary-stat-card"><div class="stat-num">42</div><div class="stat-lbl">Min Today</div></div>
-          <div class="summary-stat-card"><div class="stat-num">↗</div><div class="stat-lbl">Trend</div></div>
-        </div>
-
-        <!-- Summary cards -->
-        <div class="summary-cards" style="margin-top:12px;">
-          <div class="sum-card"><div class="sum-card-label">🎯 Covered</div><div class="sum-card-body">Fractions as division. Pizza model. Same answer, different form — word vs. numerical.</div></div>
-          <div class="sum-card"><div class="sum-card-label">⚡ Breakthrough</div><div class="sum-card-body">"Oh so it's the same thing" — unprompted. Pattern recognition. Exactly what we're building.</div></div>
-          <div class="sum-card"><div class="sum-card-label">💛 Emotional</div><div class="sum-card-body">Started anxious. Energy shifted mid-session. Volunteering answers by the end.</div></div>
-          <div class="sum-card"><div class="sum-card-label">📅 Next Time</div><div class="sum-card-body">Mixed numbers. Same pizza model. Anchor with 7×8 win first.</div></div>
-        </div>
-
-        <!-- Parent message -->
-        <div class="parent-msg">
-          <div class="parent-msg-label">📱 Parent Update — Ready to Send</div>
-          <div class="parent-msg-body">"Hi Mrs. Thompson — Marcus had a great session today. He made a real connection between division and fractions. Started anxious but ended up volunteering answers with real confidence. Something to celebrate tonight. — Ms. Rivera / Brown Bag"</div>
-        </div>
-      </div>
-      <div class="action-bar">
-        <button class="btn-back" onclick="showTab('homework')">← Homework</button>
-        <div class="btn-group">
-          <button class="btn-back" onclick="alert('Sent to Mrs. Thompson.')">📱 Send to Parent</button>
-          <button class="btn-gold" onclick="showTab('avatar')">✓ New Session</button>
-        </div>
-      </div>
-    </div>
-
   </div>
 </div>
-
+<div class="screen" id="screen-session">
+  <div class="sess-layout">
+    <div class="sess-main">
+      <div id="view-checkin">
+        <p class="section-eyebrow">Today's Session</p>
+        <h1 class="section-title">How is Marcus today?</h1>
+        <p class="section-sub">Complete the check-in. The AI reads this and builds a personalized lesson plan.</p>
+        <div class="ci-header">
+          <div class="ci-avatar">M</div>
+          <div><div class="ci-name">BB-4729 — Marcus</div><div class="ci-meta">Age 11 · 6th Grade · Session #14</div></div>
+          <div class="ci-tag">⚕️ UCSF Benioff · Day 18</div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+          <div class="ci-card"><div class="ci-lbl">⚡ Energy Level</div><div class="scale-row" id="e-scale"><button class="sc-btn" onclick="setScale('e',1,'s-red',this)">1</button><button class="sc-btn" onclick="setScale('e',2,'s-red',this)">2</button><button class="sc-btn s-amb" onclick="setScale('e',3,'s-amb',this)">3</button><button class="sc-btn" onclick="setScale('e',4,'s-grn',this)">4</button><button class="sc-btn" onclick="setScale('e',5,'s-grn',this)">5</button></div></div>
+          <div class="ci-card"><div class="ci-lbl">🩹 Pain Level</div><div class="scale-row" id="p-scale"><button class="sc-btn" onclick="setScale('p',1,'s-grn',this)">1</button><button class="sc-btn s-grn" onclick="setScale('p',2,'s-grn',this)">2</button><button class="sc-btn" onclick="setScale('p',3,'s-amb',this)">3</button><button class="sc-btn" onclick="setScale('p',4,'s-red',this)">4</button><button class="sc-btn" onclick="setScale('p',5,'s-red',this)">5</button></div></div>
+        </div>
+        <div class="ci-card" style="margin-bottom:10px;"><div class="ci-lbl">🧠 Mindset Right Now</div><div class="mood-row"><button class="mood-btn" onclick="selMood(this)">😤 I can figure it out</button><button class="mood-btn sel" onclick="selMood(this)">😟 Not sure today</button><button class="mood-btn" onclick="selMood(this)">😴 Not feeling it</button></div></div>
+        <div class="ci-card" style="margin-bottom:10px;"><div class="ci-lbl">💬 Mood</div><div class="mood-row"><button class="mood-btn sel" onclick="selMood(this)">😟 Anxious</button><button class="mood-btn" onclick="selMood(this)">😐 Okay</button><button class="mood-btn" onclick="selMood(this)">😊 Good</button><button class="mood-btn" onclick="selMood(this)">🤩 Excited</button><button class="mood-btn" onclick="selMood(this)">😴 Tired</button></div></div>
+        <div class="signal-box sig-caution" id="sig-box"><span style="font-size:18px;flex-shrink:0;">⚠️</span><div><div style="font-size:13px;font-weight:700;color:#E67E22;margin-bottom:2px;">Calibrated Session</div><div style="color:#4A3F30;">Moderate energy, some anxiety. Lead with connection before content.</div></div></div>
+        <button class="btn-primary" style="width:100%;margin-top:14px;" onclick="generatePlan()">Generate Today's Lesson Plan →</button>
+      </div>
+      <div id="view-plan" style="display:none;">
+        <p class="section-eyebrow">AI-Generated · Session #14</p>
+        <h1 class="section-title" id="plan-headline">From Pieces to Wholes</h1>
+        <div class="signal-box sig-caution" id="plan-signal" style="margin-bottom:14px;"><span style="font-size:18px;flex-shrink:0;">⚖️</span><div><div style="font-size:13px;font-weight:700;color:#E67E22;margin-bottom:2px;">Calibrated Session</div><div id="plan-rationale" style="color:#4A3F30;font-size:13px;">Starting with a confidence anchor. Connection before content.</div></div></div>
+        <div id="plan-sections"></div>
+        <div style="background:#E1F5EE;border:1px solid #A8D5C5;border-radius:10px;padding:11px 14px;margin-top:4px;"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#1D9E75;margin-bottom:3px;">📅 Next Session</div><div id="plan-next" style="font-size:13px;color:#4A3F30;">Mixed numbers. Same pizza model. Anchor with 7×8 win.</div></div>
+      </div>
+      <div id="view-summary" style="display:none;">
+        <div class="sum-hero"><div class="sum-emoji">⭐</div><div class="sum-name">Marcus — Session #14</div><div class="sum-date">UCSF Benioff · Today</div><div class="sum-stats"><div><div class="stat-v">42</div><div class="stat-l">Minutes</div></div><div><div class="stat-v">1</div><div class="stat-l">Breakthrough</div></div><div><div class="stat-v">14</div><div class="stat-l">Sessions</div></div><div><div class="stat-v">↗</div><div class="stat-l">Trend</div></div></div></div>
+        <div class="sum-grid">
+          <div class="sum-card"><div class="scard-lbl">🎯 Covered</div><div class="scard-body">Fractions as division. Pizza model. Word vs numerical — same answer.</div></div>
+          <div class="sum-card"><div class="scard-lbl">⚡ Breakthrough</div><div class="scard-body">"Oh so it's the same thing" — unprompted. Pattern recognition.</div></div>
+          <div class="sum-card"><div class="scard-lbl">💛 Emotional</div><div class="scard-body">Started anxious. Warmed up after 7×8 win. Volunteering answers by end.</div></div>
+          <div class="sum-card"><div class="scard-lbl">📅 Next Time</div><div class="scard-body">Mixed numbers. Same pizza model. Breakthrough window if vitals good.</div></div>
+        </div>
+        <div class="parent-msg"><div class="pmsg-lbl">📱 Parent Update — Ready to Send</div><div class="pmsg-body">"Hi Mrs. Thompson — Marcus had a great session today. He connected division and fractions in a real way. Started anxious but ended up volunteering answers with confidence. Something to celebrate tonight. — Ms. Rivera / Brown Bag"</div></div>
+        <button class="btn-gold" style="width:100%;margin-top:14px;" onclick="resetSession()">✓ New Session</button>
+      </div>
+    </div>
+    <div class="sess-right">
+      <div id="rp-checkin">
+        <div class="sess-right-title">Session Signal</div>
+        <div class="sess-right-sub">Override if what you see differs from the check-in.</div>
+        <div style="background:#1B2A4A;border-radius:10px;padding:12px;margin-bottom:12px;"><div style="font-size:10px;color:#C8973A;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;">Check-in says</div><div style="font-size:13px;color:rgba(180,200,230,.7);line-height:1.6;">Energy 3/5 · Pain 2/5 · Anxious<br>Mindset: not sure today<br>Day 18, nervous about falling behind</div></div>
+        <div style="background:#FDF6E8;border:1px solid #F5E6CC;border-radius:10px;padding:12px;"><div style="font-size:10px;color:#C8973A;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;">Tutor override</div><div style="font-size:12px;color:#4A3F30;margin-bottom:8px;">Does this match what you see in the room?</div><div style="display:flex;gap:7px;"><button style="flex:1;background:#1D9E75;border:none;border-radius:7px;padding:8px;font-size:11px;font-weight:700;color:#fff;cursor:pointer;" onclick="confirmSignal()">✓ Confirm</button><button style="flex:1;background:transparent;border:1.5px solid #E0D4C0;border-radius:7px;padding:8px;font-size:11px;font-weight:700;color:#4A3F30;cursor:pointer;">Adjust</button></div><div style="font-size:11px;color:#9A8C78;margin-top:8px;font-style:italic;">Your override trains the AI — every correction makes the next session more accurate.</div></div>
+      </div>
+      <div id="rp-plan" style="display:none;">
+        <div class="sess-right-title">Socratic Prompts</div>
+        <div class="sess-right-sub">Tap any to mark as used.</div>
+        <div class="prompt-chip" onclick="usePrompt(this)">"Walk me through what you were thinking step by step."</div>
+        <div class="prompt-chip" onclick="usePrompt(this)">"You got it. Now explain it like I've never seen a fraction."</div>
+        <div class="prompt-chip" onclick="usePrompt(this)">"What would happen if you just tried something and it was wrong?"</div>
+        <div class="prompt-chip" onclick="usePrompt(this)">"If you and 3 friends split one pizza — what would each person get?"</div>
+        <div style="margin-top:14px;"><div class="sess-right-title">Progress — 14 Sessions</div><div style="background:#1B2A4A;border-radius:10px;padding:14px;margin-top:8px;"><div style="font-size:11px;color:#C8973A;font-weight:700;margin-bottom:4px;">Marcus</div><div style="font-size:10px;color:rgba(180,200,230,.5);margin-bottom:10px;">Energy · Breakthroughs · Engagement</div><canvas id="miniChart"></canvas></div></div>
+        <button class="btn-primary" style="width:100%;" onclick="showSummary()">Wrap Up → Summary</button>
+      </div>
+    </div>
+  </div>
+</div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <script>
-// ── Clock ──────────────────────────────────────────────────────────
-function tick(){const t=new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});['clock-av','clock-ci','clock-ls','clock-hw','clock-sm'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=t;});}
-tick();setInterval(tick,1000);
-
-// ── Tab navigation ─────────────────────────────────────────────────
-const screens={avatar:'screen-avatar',checkin:'screen-checkin',lesson:'screen-lesson',homework:'screen-homework',summary:'screen-summary'};
-let currentTab='avatar';
-function showTab(tab){
-  const cur=document.getElementById(screens[currentTab]);
-  const next=document.getElementById(screens[tab]);
-  if(!cur||!next||tab===currentTab)return;
-  cur.classList.remove('active');cur.classList.add('exit');
-  setTimeout(()=>cur.classList.remove('exit'),400);
-  next.classList.add('active');
-  currentTab=tab;
-  setTimeout(()=>{syncAllAvatars();if(tab==='summary')initChart();},100);
-}
-
-// ── Avatar system ──────────────────────────────────────────────────
-const av={skin:'#FDDBB4',hair:'afro',hairColor:'#1A0A00',vibe:'default',accessories:['butterfly'],bg:['#EEEDFE','#E1F5EE']};
-const accessoryEmoji={butterfly:'🦋',star:'⭐',lightning:'⚡',heart:'💛',book:'📚'};
-const hairColors={afro:'#1A0A00',locs:'#4A2800',braids:'#8B4513',curly:'#D4A017',straight:'#E0E0E0',bun:'#4A2800',fade:'#1A0A00'};
-
-function drawAvatar(canvasId,size=160){
-  const c=document.getElementById(canvasId);if(!c)return;
-  const ctx=c.getContext('2d');const s=size;
-  c.width=s;c.height=s;
-
-  // Background gradient
-  const grad=ctx.createLinearGradient(0,0,s,s);
-  grad.addColorStop(0,av.bg[0]);grad.addColorStop(1,av.bg[1]);
-  ctx.fillStyle=grad;ctx.fillRect(0,0,s,s);
-
-  const cx=s/2,cy=s/2,scale=s/160;
-
-  // Face
-  ctx.fillStyle=av.skin;
-  ctx.beginPath();ctx.arc(cx,cy+10*scale,48*scale,0,Math.PI*2);ctx.fill();
-
-  // Ears
-  ctx.fillStyle=av.skin;
-  ctx.beginPath();ctx.arc(cx-44*scale,cy+12*scale,10*scale,0,Math.PI*2);ctx.fill();
-  ctx.beginPath();ctx.arc(cx+44*scale,cy+12*scale,10*scale,0,Math.PI*2);ctx.fill();
-
-  // Neck + shoulders
-  ctx.fillStyle=av.skin;
-  ctx.fillRect(cx-12*scale,cy+52*scale,24*scale,20*scale);
-  ctx.fillStyle='#3A5A8A';
-  ctx.beginPath();ctx.ellipse(cx,cy+82*scale,44*scale,20*scale,0,0,Math.PI*2);ctx.fill();
-
-  // Eyes
-  ctx.fillStyle='white';
-  ctx.beginPath();ctx.ellipse(cx-16*scale,cy+4*scale,9*scale,7*scale,0,0,Math.PI*2);ctx.fill();
-  ctx.beginPath();ctx.ellipse(cx+16*scale,cy+4*scale,9*scale,7*scale,0,0,Math.PI*2);ctx.fill();
-  ctx.fillStyle='#1A0A00';
-  ctx.beginPath();ctx.arc(cx-16*scale,cy+4*scale,5*scale,0,Math.PI*2);ctx.fill();
-  ctx.beginPath();ctx.arc(cx+16*scale,cy+4*scale,5*scale,0,Math.PI*2);ctx.fill();
-  // Eye shine
-  ctx.fillStyle='white';
-  ctx.beginPath();ctx.arc(cx-14*scale,cy+2*scale,2*scale,0,Math.PI*2);ctx.fill();
-  ctx.beginPath();ctx.arc(cx+18*scale,cy+2*scale,2*scale,0,Math.PI*2);ctx.fill();
-
-  // Eyebrows
-  ctx.strokeStyle='#1A0A00';ctx.lineWidth=2.5*scale;ctx.lineCap='round';
-  ctx.beginPath();ctx.moveTo(cx-24*scale,cy-6*scale);ctx.quadraticCurveTo(cx-16*scale,cy-11*scale,cx-8*scale,cy-6*scale);ctx.stroke();
-  ctx.beginPath();ctx.moveTo(cx+8*scale,cy-6*scale);ctx.quadraticCurveTo(cx+16*scale,cy-11*scale,cx+24*scale,cy-6*scale);ctx.stroke();
-
-  // Nose
-  ctx.strokeStyle=av.skin==='#FDDBB4'?'#D4A574':'#8D5524';ctx.lineWidth=2*scale;
-  ctx.beginPath();ctx.moveTo(cx,cy+14*scale);ctx.quadraticCurveTo(cx+8*scale,cy+22*scale,cx+4*scale,cy+26*scale);ctx.stroke();
-
-  // Mouth - smile
-  ctx.strokeStyle='#8B3A3A';ctx.lineWidth=2.5*scale;
-  ctx.beginPath();ctx.arc(cx,cy+36*scale,14*scale,0.2,Math.PI-0.2);ctx.stroke();
-
-  // Hair
-  ctx.fillStyle=av.hairColor;
-  if(av.hair==='afro'){
-    ctx.beginPath();ctx.arc(cx,cy-18*scale,56*scale,Math.PI,0);ctx.closePath();ctx.fill();
-    ctx.beginPath();ctx.arc(cx-44*scale,cy-4*scale,24*scale,0.5,2.5);ctx.fill();
-    ctx.beginPath();ctx.arc(cx+44*scale,cy-4*scale,24*scale,0.6,2.6);ctx.fill();
-  } else if(av.hair==='locs'){
-    ctx.beginPath();ctx.arc(cx,cy-10*scale,50*scale,Math.PI,0);ctx.closePath();ctx.fill();
-    for(let i=0;i<6;i++){const lx=cx-40*scale+i*16*scale,ly=cy+40*scale;ctx.fillRect(lx-3*scale,ly-30*scale,6*scale,40*scale);}
-  } else if(av.hair==='braids'){
-    ctx.beginPath();ctx.arc(cx,cy-12*scale,50*scale,Math.PI,0);ctx.closePath();ctx.fill();
-    for(let i=0;i<4;i++){const lx=cx-24*scale+i*16*scale;ctx.fillStyle=av.hairColor;for(let j=0;j<4;j++){ctx.beginPath();ctx.arc(lx,cy+30*scale+j*14*scale,6*scale,0,Math.PI*2);ctx.fill();}}
-  } else if(av.hair==='curly'){
-    ctx.beginPath();ctx.arc(cx,cy-14*scale,50*scale,Math.PI,0);ctx.closePath();ctx.fill();
-    for(let i=0;i<8;i++){const angle=Math.PI+(i/8)*Math.PI;const rx=cx+Math.cos(angle)*44*scale,ry=cy-14*scale+Math.sin(angle)*44*scale;ctx.beginPath();ctx.arc(rx,ry,10*scale,0,Math.PI*2);ctx.fill();}
-  } else if(av.hair==='straight'){
-    ctx.beginPath();ctx.arc(cx,cy-10*scale,50*scale,Math.PI,0);ctx.closePath();ctx.fill();
-    ctx.fillRect(cx-50*scale,cy-10*scale,14*scale,60*scale);ctx.fillRect(cx+36*scale,cy-10*scale,14*scale,60*scale);
-  } else if(av.hair==='bun'){
-    ctx.beginPath();ctx.arc(cx,cy-10*scale,50*scale,Math.PI,0);ctx.closePath();ctx.fill();
-    ctx.beginPath();ctx.arc(cx,cy-56*scale,18*scale,0,Math.PI*2);ctx.fill();
-  } else if(av.hair==='fade'){
-    ctx.beginPath();ctx.arc(cx,cy-14*scale,50*scale,Math.PI+0.2,-0.2);ctx.closePath();ctx.fill();
-  }
-
-  // Vibe accessories
-  if(av.vibe==='glasses'){
-    ctx.strokeStyle='#333';ctx.lineWidth=2*scale;
-    ctx.beginPath();ctx.arc(cx-16*scale,cy+4*scale,11*scale,0,Math.PI*2);ctx.stroke();
-    ctx.beginPath();ctx.arc(cx+16*scale,cy+4*scale,11*scale,0,Math.PI*2);ctx.stroke();
-    ctx.beginPath();ctx.moveTo(cx-5*scale,cy+4*scale);ctx.lineTo(cx+5*scale,cy+4*scale);ctx.stroke();
-  } else if(av.vibe==='cap'){
-    ctx.fillStyle=av.hairColor;
-    ctx.fillRect(cx-44*scale,cy-32*scale,88*scale,20*scale);
-    ctx.beginPath();ctx.arc(cx,cy-32*scale,44*scale,Math.PI,0);ctx.fill();
-    ctx.fillStyle='rgba(0,0,0,0.2)';ctx.fillRect(cx-14*scale,cy-34*scale,28*scale,6*scale);
-  } else if(av.vibe==='crown'){
-    ctx.fillStyle='#FFD700';
-    const topY=cy-62*scale;
-    ctx.beginPath();ctx.moveTo(cx-30*scale,topY+20*scale);ctx.lineTo(cx-30*scale,topY);ctx.lineTo(cx-16*scale,topY+12*scale);ctx.lineTo(cx,topY-4*scale);ctx.lineTo(cx+16*scale,topY+12*scale);ctx.lineTo(cx+30*scale,topY);ctx.lineTo(cx+30*scale,topY+20*scale);ctx.closePath();ctx.fill();
-  } else if(av.vibe==='headphones'){
-    ctx.strokeStyle='#333';ctx.lineWidth=4*scale;
-    ctx.beginPath();ctx.arc(cx,cy-24*scale,46*scale,Math.PI+0.3,-0.3);ctx.stroke();
-    ctx.fillStyle='#555';
-    ctx.beginPath();ctx.arc(cx-46*scale,cy-22*scale,8*scale,0,Math.PI*2);ctx.fill();
-    ctx.beginPath();ctx.arc(cx+46*scale,cy-22*scale,8*scale,0,Math.PI*2);ctx.fill();
-  } else if(av.vibe==='flowers'){
-    ['#FF69B4','#FFB6C1','#FF1493'].forEach((col,i)=>{
-      ctx.fillStyle=col;
-      const fx=cx+(i-1)*18*scale,fy=cy-58*scale;
-      ctx.beginPath();ctx.arc(fx,fy,8*scale,0,Math.PI*2);ctx.fill();
-    });
-  }
-
-  // Accessories overlay (emoji)
-  if(s>=100){
-    ctx.font=`${18*scale}px serif`;
-    if(av.accessories.includes('butterfly')){ctx.fillText('🦋',cx+20*scale,cy-30*scale);}
-    if(av.accessories.includes('star')){ctx.fillText('⭐',cx-46*scale,cy-40*scale);}
-    if(av.accessories.includes('lightning')){ctx.fillText('⚡',cx+30*scale,cy+6*scale);}
-    if(av.accessories.includes('heart')){ctx.fillText('💛',cx-42*scale,cy+10*scale);}
-    if(av.accessories.includes('book')){ctx.fillText('📚',cx+32*scale,cy+30*scale);}
-  }
-}
-
-function syncAllAvatars(){
-  ['avatarCanvas','avatarSmall','avatarStudentCard','avatarLesson','avatarHW','avatarSummary'].forEach(id=>drawAvatar(id,parseInt(document.getElementById(id)?.width||160)));
-}
-
-function setSkin(color,el){av.skin=color;document.querySelectorAll('#skin-swatches .swatch').forEach(s=>s.classList.remove('selected'));el.classList.add('selected');syncAllAvatars();}
-function setHair(style,el){av.hair=style;document.querySelectorAll('#hair-style .style-chip').forEach(s=>s.classList.remove('selected'));el.classList.add('selected');syncAllAvatars();}
-function setHairColor(color,el){av.hairColor=color;document.querySelectorAll('#hair-swatches .swatch').forEach(s=>s.classList.remove('selected'));el.classList.add('selected');syncAllAvatars();}
-function setVibe(vibe,el){av.vibe=vibe;document.querySelectorAll('#vibe-chips .style-chip').forEach(s=>s.classList.remove('selected'));el.classList.add('selected');syncAllAvatars();}
-function toggleAcc(acc,el){
-  if(av.accessories.includes(acc)){av.accessories=av.accessories.filter(a=>a!==acc);el.classList.remove('selected');}
-  else{av.accessories.push(acc);el.classList.add('selected');}
-  syncAllAvatars();
-}
-function setBg(colors,el){av.bg=colors;document.querySelectorAll('#bg-swatches .swatch').forEach(s=>s.classList.remove('selected'));el.classList.add('selected');syncAllAvatars();}
-function randomizeAvatar(){
-  const skins=['#FDDBB4','#F0C27F','#D4A574','#C68642','#8D5524','#4A3728'];
-  const hairs=['afro','locs','braids','curly','straight','bun','fade'];
-  const hColors=['#1A0A00','#4A2800','#8B4513','#D4A017','#E040FB','#00BCD4','#FF5722','#E0E0E0'];
-  const vibes=['default','glasses','cap','crown','headphones','flowers'];
-  const bgs=[['#EEEDFE','#E1F5EE'],['#FAEEDA','#FAECE7'],['#1B2A4A','#2E4480'],['#E1F5EE','#EAF3DE'],['#FBEAF0','#EEEDFE'],['#F5E6CC','#FDF6E8']];
-  av.skin=skins[Math.floor(Math.random()*skins.length)];
-  av.hair=hairs[Math.floor(Math.random()*hairs.length)];
-  av.hairColor=hColors[Math.floor(Math.random()*hColors.length)];
-  av.vibe=vibes[Math.floor(Math.random()*vibes.length)];
-  av.bg=bgs[Math.floor(Math.random()*bgs.length)];
-  syncAllAvatars();
-}
-
-// Init avatar
-setTimeout(()=>{syncAllAvatars();},200);
-
-// ── Check-in ───────────────────────────────────────────────────────
-const scales={energy:{val:3,color:'amber'},pain:{val:2,color:'green'}};
-let selectedMood='Anxious';
-
-function selectScale(type,val,color){
-  scales[type]={val,color};
-  document.getElementById(`${type}-scale`).querySelectorAll('.scale-btn').forEach((btn,i)=>{btn.className='scale-btn';if(i+1===val)btn.classList.add(`selected-${color}`);});
-}
-function selectMood(btn){document.querySelectorAll('.mood-btn').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');}
-
-// ── Homework ───────────────────────────────────────────────────────
-const correctAnswers={q1:56,q2:54};
-function toggleHW(id){
-  const body=document.getElementById(`${id}-body`);
-  body.style.display=body.style.display==='none'?'block':'none';
-}
-function checkFluency(q,ans,btn){
-  const row=document.getElementById(`fluency-${q}`);
-  if(correctAnswers[q]===ans){btn.classList.add('correct');row.querySelectorAll('.fluency-btn').forEach(b=>{if(b!==btn)b.disabled=true;});}
-  else{btn.classList.add('wrong');setTimeout(()=>btn.classList.remove('wrong'),1000);}
-}
-function selectInterest(interest,el){
-  document.querySelectorAll('.interest-btn').forEach(b=>b.classList.remove('selected'));
-  el.classList.add('selected');
-  // Update HW card to match interest
-  const labels={sports:'🏀',music:'🎵',food:'🍕',gaming:'🎮',art:'🎨',animals:'🐶'};
-  const titles={sports:'The Shot Clock Problem',music:'The Rhythm Fraction',food:'The Recipe Challenge',gaming:'The Loot Split',art:'The Color Mix',animals:'The Habitat Share'};
-  const desc={sports:'A basketball player made 3 out of 4 free throws. Write that two ways — as a fraction AND a division problem.',music:'A song has 4 beats per measure. You clap on 3 of them. Write that as a fraction and as a division problem.',food:'A recipe calls for 3 cups of flour to make 4 servings. What fraction of the recipe is one serving?',gaming:'You found 3 rare items in a dungeon with 4 treasure chests. Write the fraction of chests with rare loot.',art:'You mixed 3 blue tiles and 1 yellow tile. What fraction of your mosaic is blue?',animals:'3 out of 4 pandas in a zoo eat bamboo in the morning. Write that as a fraction and as division.'};
-  document.querySelector('#hw1 .hw-icon').textContent=labels[interest];
-  document.querySelector('#hw1 .hw-title').textContent=titles[interest];
-  document.querySelector('#hw1-body').innerHTML=desc[interest]+'<div class="hw-explain-box">✍️ Explain it back: "A fraction is the same as division because..."</div>';
-}
-
-// ── Lesson plan generation ─────────────────────────────────────────
-const sectionSteps={};
-
-async function generateLesson(){
-  showTab('lesson');
-  const content=document.getElementById('lesson-content');
-  content.innerHTML=`<div class="gen-box"><div class="gen-spin"></div><div class="gen-title">Building your lesson plan...</div><div class="gen-sub">Reading your check-in. Building something just for you.</div><div class="gen-steps"><div class="gen-step done" id="gs1"><div class="gen-step-dot"></div>Reading your check-in</div><div class="gen-step done" id="gs2"><div class="gen-step-dot"></div>Checking your history</div><div class="gen-step" id="gs3"><div class="gen-step-dot"></div>Building session structure</div><div class="gen-step" id="gs4"><div class="gen-step-dot"></div>Writing Socratic prompts</div><div class="gen-step" id="gs5"><div class="gen-step-dot"></div>Calibrating for today</div></div></div>`;
-  let sn=3;const si=setInterval(()=>{const el=document.getElementById(`gs${sn}`);if(el)el.classList.add('done');sn++;if(sn>5)clearInterval(si);},600);
-  const energy=scales.energy?.val||3,pain=scales.pain?.val||2,mood=selectedMood||'Okay';
-  const note=document.getElementById('nurse-note')?.value||'';
-  const prompt=`You are the Brown Bag AI. Generate a personalized step-by-step tutoring lesson plan for Marcus Thompson, Age 11, 6th Grade, hospitalized Day 18, Session 14. Working on fractions. Strong at times tables. Check-in: Energy ${energy}/5, Pain ${pain}/5, Mood: ${mood}. Context: ${note}. Brown Bag philosophy: relationship first, Math Mindset (struggle=growth), SEL integrated, Socratic (never give the answer). Return ONLY valid JSON: {"session_type":"breakthrough|calibrated|light","session_headline":"title","session_rationale":"2 sentences","total_minutes":45,"sections":[{"id":"warmup","label":"Warm-Up","title":"title","duration":"8 min","tag":"Connection First","steps":[{"title":"step","body":"what to do","note":"tutor tip"}],"complete_message":"msg"},{"id":"core","label":"Core Concept","title":"title","duration":"20 min","tag":"Math Mindset","steps":[{"title":"step","body":"what to do","note":"if struggle..."}],"complete_message":"msg"},{"id":"socratic","label":"Socratic Prompts","title":"Questions","duration":"Throughout","tag":"Struggle Literacy","steps":[{"title":"When wrong","body":"prompt","note":"why"},{"title":"When right","body":"prompt","note":"deepen"},{"title":"Shut down","body":"prompt","note":"reopen"},{"title":"His life","body":"prompt","note":"connect"}],"complete_message":"msg"},{"id":"closing","label":"Closing","title":"title","duration":"8 min","tag":"Send Off Strong","steps":[{"title":"step","body":"how to close","note":"affirmation"}],"complete_message":"msg"}],"next_session_seed":"one sentence","parent_message":"warm 2-3 sentence update"}`;
-  try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1500,messages:[{role:'user',content:prompt}]})});
-    const data=await res.json();
-    const raw=data.content.find(b=>b.type==='text')?.text||'';
-    renderLesson(JSON.parse(raw.replace(/```json|```/g,'').trim()));
-  }catch{renderLesson(fallbackPlan(energy,pain));}
-  document.getElementById('hw-btn').disabled=false;
-}
-
-function fallbackPlan(e,p){
-  return {session_type:e>=4&&p<=2?"breakthrough":e<=2||p>=4?"light":"calibrated",session_headline:"From Pieces to Wholes — Fractions as Sharing",session_rationale:"Marcus is anxious with moderate energy today. Starting with a confidence anchor before any new fraction concepts.",total_minutes:45,sections:[{id:"warmup",label:"Warm-Up",title:"The Times Table Win",duration:"8 min",tag:"Connection First",steps:[{title:"Open with the win",body:"Ask Marcus to recall 7×8 without counting. Wait. Let it land. Say: 'That happened because you kept going.'",note:"Watch body language — extend if still closed after 3 min."},{title:"Bridge to today",body:"Ask: 'What do you think fractions have to do with multiplication?' Don't answer it — plant the question.",note:"Curiosity, not performance."}],complete_message:"Warm-up done ✓"},{id:"core",label:"Core Concept",title:"Fractions as Division — Pizza Model",duration:"22 min",tag:"Math Mindset",steps:[{title:"Draw the pizza",body:"Let Marcus draw a circle and cut it into 4 slices. Ask: if you eat 1 slice, what did you eat?",note:"Let him choose the words first."},{title:"Two ways to write it",body:"Write 1÷4 and 1/4 side by side. Say nothing. Wait. Let him connect them.",note:"If stuck: '4 friends share 1 pizza — what does each person get?'"},{title:"Test the pattern",body:"Try 2÷4 and 2/4. Ask: same thing? Let him confirm.",note:"If shutdown: 'What do you notice?' — not 'solve it.'"},{title:"Word vs numerical",body:"Write the word problem and the equation. Are they the same question?",note:"If correct: 'How did you know?' Make him say it."}],complete_message:"Core concept done ✓"},{id:"socratic",label:"Socratic Prompts",title:"Questions to Use",duration:"Throughout",tag:"Struggle Literacy",steps:[{title:"When he gets it wrong",body:"'Walk me through what you were thinking step by step.'",note:"Wrong answers contain information."},{title:"When he gets it right",body:"'Explain it to me like I've never seen a fraction.'",note:"Teaching deepens understanding."},{title:"When he shuts down",body:"'What would happen if you just tried something and it was wrong?'",note:"Make struggle safe."},{title:"Connect to his life",body:"'If you and 3 friends split one pizza — what would you each get?'",note:"Ground it in his world."}],complete_message:"Prompts reviewed ✓"},{id:"closing",label:"Closing",title:"The Connection Moment",duration:"8 min",tag:"Send Off Strong",steps:[{title:"Document the win",body:"Ask: 'What makes more sense now than when we started?' Write his words where he can see.",note:"His own insight documented = real and lasting."},{title:"The affirmation",body:"'You came in anxious today and figured something out anyway. That's not luck. That's what your brain does when you give it a chance.'",note:"Eye contact. Slow. Let it land."}],complete_message:"Session complete ✓"}],next_session_seed:"Mixed numbers using same pizza model — Marcus is ready.",parent_message:"Hi Mrs. Thompson — Marcus had a great session today. He connected division and fractions in a real way. Started anxious but ended up volunteering answers with confidence. Something to celebrate tonight. — Ms. Rivera / Brown Bag"};
-}
-
-function renderLesson(plan){
-  const tMap={breakthrough:{s:'breakthrough',i:'🚀',l:'Breakthrough Session'},calibrated:{s:'caution',i:'⚖️',l:'Calibrated Session'},light:{s:'rest',i:'💛',l:'Light Session'}};
-  const t=tMap[plan.session_type]||tMap.calibrated;
-  const tagMap={warmup:'tag-warmup',core:'tag-core',socratic:'tag-socratic',closing:'tag-close'};
-  const dots=plan.sections.map(()=>'<div class="plan-dot"></div>').join('');
-  let html=`<div class="fade-in"><p class="sec-eyebrow">AI-Generated · Session #14</p><h1 class="sec-title" style="margin-bottom:6px;">${plan.session_headline}</h1><div class="signal-box ${t.s}" style="margin-bottom:14px;"><div style="font-size:18px;flex-shrink:0;margin-top:1px;">${t.i}</div><div><div class="signal-title">${t.l}</div><div class="signal-body">${plan.session_rationale}</div></div></div><div class="plan-overview"><div><div class="plan-ov-title">Today's Session</div><div style="font-size:11px;color:var(--text-light);margin-top:2px;">${plan.sections.length} sections · ${plan.total_minutes} min · Tap to follow along</div></div><div class="plan-dots" id="pdots">${dots}</div></div>`;
-  plan.sections.forEach((sec,si)=>{
-    const sdots=sec.steps.map(()=>'<div class="plan-dot"></div>').join('');
-    let stepsHtml=sec.steps.map((step,idx)=>`<div class="flow-step ${idx===0?'active-step':''}" id="fstep-${sec.id}-${idx}"><div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;gap:0;"><div class="flow-dot">${idx===0?'→':idx+1}</div>${idx<sec.steps.length-1?'<div class="flow-line"></div>':''}</div><div style="flex:1;"><div class="flow-step-title">${step.title}</div><div class="flow-step-body">${step.body}</div><div class="flow-note">💡 ${step.note}</div><div class="flow-actions"><button class="flow-btn" onclick="advStep('${sec.id}',${idx})">${idx<sec.steps.length-1?'Next Step →':'Complete ✓'}</button>${idx>0?`<button class="flow-skip" onclick="advStep('${sec.id}',${idx})">Skip</button>`:''}</div></div></div>`).join('');
-    html+=`<div id="phdr-${sec.id}" class="plan-hdr" onclick="toggleSec('${sec.id}')"><div style="display:flex;align-items:center;gap:10px;"><div class="plan-hdr-num">${si+1}</div><div><div class="plan-hdr-lbl">${sec.label} · ${sec.duration}</div><div class="plan-hdr-title">${sec.title}</div></div></div><span class="plan-hdr-chev">⌄</span></div><div id="pbody-${sec.id}" class="plan-body"><div class="plan-body-inner"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;"><span class="tag-pill ${tagMap[sec.id]||'tag-core'}">${sec.tag}</span><div class="plan-dots" id="sdots-${sec.id}" style="gap:4px;">${sdots}</div></div><div>${stepsHtml}</div><div class="sec-complete" id="scom-${sec.id}">✓ ${sec.complete_message}</div></div></div>`;
-  });
-  html+=`<div style="background:var(--teal-light);border:1px solid #A8D5C5;border-radius:var(--radius);padding:12px 15px;margin:6px 0 18px;"><div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--teal);margin-bottom:3px;">📅 Next Session</div><div style="font-size:13px;color:var(--text-mid);">${plan.next_session_seed}</div></div></div>`;
-  document.getElementById('lesson-content').innerHTML=html;
-  setTimeout(()=>toggleSec(plan.sections[0].id),350);
-  plan.sections.forEach(sec=>{sectionSteps[sec.id]=0;const d=document.querySelectorAll(`#sdots-${sec.id} .plan-dot`);if(d[0])d[0].classList.add('active');});
-}
-
-function toggleSec(id){
-  const h=document.getElementById(`phdr-${id}`),b=document.getElementById(`pbody-${id}`);
-  const wasOpen=h.classList.contains('open');
-  document.querySelectorAll('.plan-hdr').forEach(x=>x.classList.remove('open'));
-  document.querySelectorAll('.plan-body').forEach(x=>x.classList.remove('open'));
-  if(!wasOpen){h.classList.add('open');b.classList.add('open');}
-}
-
-function advStep(secId,stepIdx){
-  const steps=document.querySelectorAll(`#pbody-${secId} .flow-step`);
-  const dots=document.querySelectorAll(`#sdots-${secId} .plan-dot`);
-  steps[stepIdx].classList.remove('active-step');steps[stepIdx].classList.add('done-step');
-  steps[stepIdx].querySelector('.flow-dot').textContent='✓';
-  if(dots[stepIdx])dots[stepIdx].classList.replace('active','done');
-  const next=stepIdx+1;
-  if(next<steps.length){steps[next].classList.add('active-step');if(dots[next])dots[next].classList.add('active');steps[next].scrollIntoView({behavior:'smooth',block:'nearest'});}
-  else{const b=document.getElementById(`scom-${secId}`);if(b)b.classList.add('show');const h=document.getElementById(`phdr-${secId}`);if(h)h.classList.add('completed');updateOverallDots();}
-}
-
-function updateOverallDots(){
-  const done=document.querySelectorAll('.plan-hdr.completed').length;
-  const all=document.querySelectorAll('.plan-hdr').length;
-  document.querySelectorAll('#pdots .plan-dot').forEach((d,i)=>{if(i<done)d.classList.add('done');});
-  if(done>=all)document.getElementById('hw-btn').disabled=false;
-}
-
-// ── Session summary chart ──────────────────────────────────────────
-let chartInstance=null;
-function initChart(){
-  const canvas=document.getElementById('summaryChart');
-  if(!canvas)return;
-  if(chartInstance){chartInstance.destroy();chartInstance=null;}
-  const sessions=['S1','S2','S3','S4','S5','S6','S7','S8','S9','S10','S11','S12','S13','S14'];
-  const energy=[2,2,3,2,3,4,3,2,4,3,4,4,3,3];
-  const breakthroughs=[0,0,1,0,0,1,1,0,1,1,1,0,1,1];
-  const engagement=[2,3,3,3,4,4,3,3,4,4,4,4,4,4];
-  chartInstance=new Chart(canvas,{
-    type:'line',
-    data:{
-      labels:sessions,
-      datasets:[
-        {label:'Energy',data:energy,borderColor:'#C8973A',backgroundColor:'rgba(200,151,58,.12)',tension:.4,borderWidth:2,pointRadius:3,pointBackgroundColor:'#C8973A',fill:true},
-        {label:'Breakthroughs',data:breakthroughs.map(v=>v*4.5),borderColor:'#7F77DD',backgroundColor:'rgba(127,119,221,.08)',tension:.3,borderWidth:2,pointRadius:breakthroughs.map(v=>v?6:2),pointBackgroundColor:breakthroughs.map(v=>v?'#7F77DD':'rgba(127,119,221,.3)'),fill:false,borderDash:breakthroughs.map(v=>v?[]:[4,2])},
-        {label:'Engagement',data:engagement,borderColor:'#1D9E75',backgroundColor:'rgba(29,158,117,.08)',tension:.4,borderWidth:2,pointRadius:3,pointBackgroundColor:'#1D9E75',fill:true},
-      ]
-    },
-    options:{
-      responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{display:false},tooltip:{backgroundColor:'rgba(27,42,74,.9)',titleColor:'#C8973A',bodyColor:'white',padding:8,cornerRadius:8}},
-      scales:{
-        x:{grid:{color:'rgba(255,255,255,.06)'},ticks:{color:'rgba(180,200,230,.6)',font:{size:10}}},
-        y:{min:0,max:5,grid:{color:'rgba(255,255,255,.06)'},ticks:{color:'rgba(180,200,230,.6)',font:{size:10},stepSize:1}}
-      }
-    }
-  });
-}
+function switchScreen(s){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.nav-tab').forEach(x=>x.classList.remove('active'));document.getElementById('screen-'+s).classList.add('active');const tabs=document.querySelectorAll('.nav-tab');if(s==='avatar')tabs[0].classList.add('active');else{tabs[1].classList.add('active');setTimeout(drawMiniChart,200);}}
+let rotY=0,rotX=0,dragging=false,prevX=0,prevY=0,autoRot=true;
+const wrap=document.getElementById('avBodyWrap');
+const scene=document.getElementById('avScene');
+function applyRot(){wrap.style.transform=`rotateY(${rotY}deg) rotateX(${rotX}deg)`;}
+scene.addEventListener('mousedown',e=>{dragging=true;prevX=e.clientX;prevY=e.clientY;autoRot=false;});
+window.addEventListener('mousemove',e=>{if(!dragging)return;rotY+=(e.clientX-prevX)*0.5;rotX-=(e.clientY-prevY)*0.3;rotX=Math.max(-25,Math.min(25,rotX));prevX=e.clientX;prevY=e.clientY;applyRot();});
+window.addEventListener('mouseup',()=>dragging=false);
+scene.addEventListener('touchstart',e=>{dragging=true;prevX=e.touches[0].clientX;prevY=e.touches[0].clientY;autoRot=false;e.preventDefault();},{passive:false});
+scene.addEventListener('touchmove',e=>{if(!dragging)return;rotY+=(e.touches[0].clientX-prevX)*0.5;rotX-=(e.touches[0].clientY-prevY)*0.3;rotX=Math.max(-25,Math.min(25,rotX));prevX=e.touches[0].clientX;prevY=e.touches[0].clientY;applyRot();e.preventDefault();},{passive:false});
+scene.addEventListener('touchend',()=>dragging=false);
+setInterval(()=>{if(autoRot){rotY+=0.6;applyRot();}},16);
+const st={skin:'#FDDBB4',hair:'afro',hColor:'#1A0A00',c1:'#1B2A4A',c2:'#C8973A'};
+function setSkin(c,el){st.skin=c;document.getElementById('avHead').style.background=c;selSwatch('#sw-skin',el);}
+function setHairStyle(s,el){st.hair=s;renderHair();selChip('#hair-row',el);}
+function setHairColor(c,el){st.hColor=c;renderHair();selSwatch('#sw-hair',el);}
+function setOutfit(c1,c2,el){st.c1=c1;st.c2=c2;['avBody','armL','armR','legL','legR'].forEach(id=>document.getElementById(id).style.background=c1);document.getElementById('avStripe').style.background=c2;selOutfit(el);}
+function setAcc(a,el){document.getElementById('avAcc').textContent=a;selChip('#acc-row',el);}
+function setEye(s,el){const pupils=document.querySelectorAll('.av-pupil');if(s==='star')pupils.forEach(p=>p.style.background='#FFD740');else if(s==='heart')pupils.forEach(p=>p.style.background='#FF1744');else if(s==='sleepy')pupils.forEach(p=>{p.style.height='6px';p.style.top='8px';});else if(s==='cool')pupils.forEach(p=>{p.style.background='#111';p.style.height='14px';p.style.borderRadius='4px';p.style.top='4px';});else pupils.forEach(p=>{p.style.background='#111';p.style.height='14px';p.style.borderRadius='50%';p.style.top='4px';});selChip('#eye-row',el);}
+function renderHair(){const h=document.getElementById('avHair');const styles={afro:`width:128px;height:100px;border-radius:50%;background:${st.hColor};left:36px;top:4px;`,locs:`width:108px;height:70px;border-radius:50% 50% 0 0;background:${st.hColor};left:46px;top:8px;box-shadow:0 40px 0 ${st.hColor},-20px 50px 0 ${st.hColor},20px 50px 0 ${st.hColor};`,braids:`width:108px;height:70px;border-radius:50% 50% 0 0;background:${st.hColor};left:46px;top:8px;box-shadow:0 60px 0 8px ${st.hColor};`,fade:`width:108px;height:50px;border-radius:50% 50% 0 0;background:${st.hColor};left:46px;top:12px;`,curly:`width:130px;height:90px;border-radius:50%;background:${st.hColor};left:35px;top:2px;box-shadow:8px -10px 0 6px ${st.hColor},-8px -8px 0 4px ${st.hColor};`,bun:`width:100px;height:55px;border-radius:50% 50% 0 0;background:${st.hColor};left:50px;top:10px;box-shadow:0 -30px 0 12px ${st.hColor};`,bald:`width:0;height:0;`};h.style.cssText=styles[st.hair]||styles.afro;}
+renderHair();
+function selSwatch(p,el){document.querySelectorAll(p+' .sw').forEach(s=>s.classList.remove('sel'));el.classList.add('sel');}
+function selChip(p,el){document.querySelectorAll(p+' .chip').forEach(s=>s.classList.remove('sel'));el.classList.add('sel');}
+function selOutfit(el){document.querySelectorAll('#outfit-grid .outfit-card').forEach(s=>s.classList.remove('sel'));el.classList.add('sel');}
+function avTab(t){document.querySelectorAll('.av-tabBtn').forEach(b=>b.classList.remove('active'));document.querySelectorAll('.av-section').forEach(s=>s.classList.remove('active'));const tabs=['skin','hair','outfit','badges'];document.querySelectorAll('.av-tabBtn')[tabs.indexOf(t)].classList.add('active');document.getElementById('sec-'+t).classList.add('active');}
+function randomize(){const skins=['#FDDBB4','#F0C27F','#C68642','#8D5524','#4A3728','#8EC5FC','#A8E063','#E040FB'];const hStyles=['afro','locs','braids','fade','curly','bun','bald'];const hColors=['#1A0A00','#4A2800','#C68642','#E0E0E0','#FF1744','#E040FB','#00BCD4','#FFD740'];const outfits=[['#1B2A4A','#C8973A'],['#D85A30','#FF8A65'],['#7F77DD','#E040FB'],['#1D9E75','#A8E063'],['#FF1744','#FFD740'],['#C8973A','#FFF9C4']];const accs=['🦋','👑','🎧','⭐',''];st.skin=skins[Math.floor(Math.random()*skins.length)];document.getElementById('avHead').style.background=st.skin;st.hair=hStyles[Math.floor(Math.random()*hStyles.length)];st.hColor=hColors[Math.floor(Math.random()*hColors.length)];renderHair();const[c1,c2]=outfits[Math.floor(Math.random()*outfits.length)];st.c1=c1;st.c2=c2;['avBody','armL','armR','legL','legR'].forEach(id=>document.getElementById(id).style.background=c1);document.getElementById('avStripe').style.background=c2;document.getElementById('avAcc').textContent=accs[Math.floor(Math.random()*accs.length)];autoRot=true;}
+const scales={e:{v:3,c:'s-amb'},p:{v:2,c:'s-grn'}};
+function setScale(type,v,cls,el){scales[type]={v,c:cls};document.querySelectorAll('#'+type+'-scale .sc-btn').forEach(b=>{b.className='sc-btn';});el.classList.add(cls);updateSignal();}
+function selMood(el){el.classList.toggle('sel');}
+function updateSignal(){const e=scales.e.v,p=scales.p.v;const box=document.getElementById('sig-box');if(e>=4&&p<=2){box.className='signal-box sig-break';box.innerHTML='<span style="font-size:18px;flex-shrink:0;">🚀</span><div><div style="font-size:13px;font-weight:700;color:#1A6B3A;margin-bottom:2px;">Breakthrough Window</div><div style="color:#4A3F30;">High energy, low pain. Push toward the next concept.</div></div>';}else if(e<=2||p>=4){box.className='signal-box sig-rest';box.innerHTML='<span style="font-size:18px;flex-shrink:0;">💛</span><div><div style="font-size:13px;font-weight:700;color:#C0392B;margin-bottom:2px;">Light Session Today</div><div style="color:#4A3F30;">Connection before content. Reinforce, don\'t introduce.</div></div>';}else{box.className='signal-box sig-caution';box.innerHTML='<span style="font-size:18px;flex-shrink:0;">⚠️</span><div><div style="font-size:13px;font-weight:700;color:#E67E22;margin-bottom:2px;">Calibrated Session</div><div style="color:#4A3F30;">Lead with connection. Warm-up before any new content.</div></div>';}}
+const secSteps={};
+async function generatePlan(){document.getElementById('view-checkin').style.display='none';document.getElementById('view-plan').style.display='block';document.getElementById('rp-checkin').style.display='none';document.getElementById('rp-plan').style.display='block';document.getElementById('plan-sections').innerHTML=`<div class="gen-box"><div class="gen-spin"></div><div class="gen-title">Building Marcus's lesson plan...</div><div class="gen-sub">Reading check-in · Analyzing mindset · Generating session structure</div></div>`;const fallback=getFallback();try{const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1200,messages:[{role:'user',content:`Brown Bag AI. Marcus Thompson, Age 11, 6th Grade, UCSF Day 18, Session 14. Fractions. Energy ${scales.e.v}/5, Pain ${scales.p.v}/5. Return ONLY valid JSON: {"session_headline":"title","session_rationale":"2 sentences","sections":[{"id":"warmup","label":"Warm-Up","title":"title","duration":"8 min","steps":[{"title":"step","body":"what","note":"tip"}],"done_msg":"msg"},{"id":"core","label":"Core Concept","title":"title","duration":"20 min","steps":[{"title":"step","body":"what","note":"if struggle"}],"done_msg":"msg"},{"id":"socratic","label":"Socratic Prompts","title":"Questions","duration":"Throughout","steps":[{"title":"When wrong","body":"prompt","note":"why"},{"title":"When right","body":"prompt","note":"deepen"},{"title":"Shut down","body":"prompt","note":"reopen"},{"title":"Connect","body":"prompt","note":"meaning"}],"done_msg":"msg"},{"id":"closing","label":"Closing","title":"title","duration":"8 min","steps":[{"title":"step","body":"how to close","note":"affirmation"}],"done_msg":"msg"}],"next_session_seed":"one sentence"}`}]}));const d=await res.json();const raw=d.content.find(b=>b.type==='text')?.text||'';renderPlan(JSON.parse(raw.replace(/```json|```/g,'').trim()));}catch{renderPlan(fallback);}drawMiniChart();}
+function getFallback(){return{session_headline:"From Pieces to Wholes — Fractions as Sharing",session_rationale:"Marcus is anxious with moderate energy. Starting with a confidence anchor before any new fraction concepts.",next_session_seed:"Mixed numbers using same pizza model.",sections:[{id:"warmup",label:"Warm-Up",title:"The Times Table Win",duration:"8 min",steps:[{title:"Open with the win",body:"Ask Marcus to recall 7×8 without counting. Wait. Let it land. 'That happened because you kept going.'",note:"Extend if still closed — don't rush."},{title:"Bridge to today",body:"Ask: 'What do you think fractions have to do with multiplication?' Don't answer. Plant the question.",note:"Curiosity, not performance."}],done_msg:"Warm-up complete ✓"},{id:"core",label:"Core Concept",title:"Fractions as Division — Pizza Model",duration:"20 min",steps:[{title:"Draw the pizza",body:"Let Marcus draw a circle and cut it into 4 slices. If you eat 1, what did you eat?",note:"Let him choose the words."},{title:"Two ways to write it",body:"Write 1÷4 and 1/4 side by side. Say nothing. Wait. Let him connect them.",note:"If stuck: '4 friends share 1 pizza — what does each get?'"},{title:"Test the pattern",body:"Try 2÷4 and 2/4. 'Same thing?' Let him confirm.",note:"If shutdown: 'What do you notice?' — not 'solve it.'"},{title:"Word vs numerical",body:"Write the word problem and equation. 'Are these the same question?'",note:"If correct: 'How did you know?' Make him say it."}],done_msg:"Core concept complete ✓"},{id:"socratic",label:"Socratic Prompts",title:"Questions Throughout",duration:"Throughout",steps:[{title:"When wrong",body:"'Walk me through what you were thinking step by step.'",note:"Wrong answers are information."},{title:"When right",body:"'Explain it like I've never seen a fraction.'",note:"Teaching deepens understanding."},{title:"Shut down",body:"'What if you just tried something and it was wrong?'",note:"Make struggle safe."},{title:"Connect",body:"'If you and 3 friends split one pizza — what does each person get?'",note:"Ground it in his world."}],done_msg:"Prompts reviewed ✓"},{id:"closing",label:"Closing",title:"The Connection Moment",duration:"8 min",steps:[{title:"Document the win",body:"'What makes more sense now than when we started?' Write his words where he can see.",note:"His insight documented = lasting."},{title:"The affirmation",body:"'You came in anxious today and figured something out anyway. That's your brain when you give it a chance.'",note:"Eye contact. Slow. Let it land."}],done_msg:"Session complete ✓"}]};}
+const tagColors={warmup:'#7F77DD',core:'#C8973A',socratic:'#1D9E75',closing:'#D85A30'};
+function renderPlan(plan){document.getElementById('plan-headline').textContent=plan.session_headline;document.getElementById('plan-rationale').textContent=plan.session_rationale;document.getElementById('plan-next').textContent=plan.next_session_seed;let html='';plan.sections.forEach((sec,si)=>{const tc=tagColors[sec.id]||'#C8973A';let stepsHtml=sec.steps.map((step,idx)=>`<div class="flow-step ${idx===0?'act':''}" id="fs-${sec.id}-${idx}"><div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;gap:0;"><div class="fdot">${idx===0?'→':idx+1}</div>${idx<sec.steps.length-1?'<div class="fline"></div>':''}</div><div style="flex:1;"><div class="ftitle">${step.title}</div><div class="fbody">${step.body}</div><div class="fnote">💡 ${step.note}</div><div class="fbtns"><button class="fbtn" onclick="advStep('${sec.id}',${idx})">${idx<sec.steps.length-1?'Next Step →':'Complete ✓'}</button>${idx>0?`<button class="fskip" onclick="advStep('${sec.id}',${idx})">Skip</button>`:''}</div></div></div>`).join('');html+=`<div class="plan-card"><div class="plan-hdr" id="phdr-${sec.id}" onclick="toggleSec('${sec.id}')"><div style="display:flex;align-items:center;gap:10px;"><div class="phdr-num">${si+1}</div><div><div class="phdr-label">${sec.label} · ${sec.duration}</div><div class="phdr-title">${sec.title}</div></div></div><span class="phdr-chev">⌄</span></div><div class="plan-body" id="pbody-${sec.id}"><div class="plan-body-inner"><div style="display:inline-block;background:${tc}22;color:${tc};font-size:10px;font-weight:700;padding:2px 9px;border-radius:20px;margin-bottom:10px;">${sec.id==='warmup'?'Connection First':sec.id==='core'?'Math Mindset':sec.id==='socratic'?'Struggle Literacy':'Send Off Strong'}</div>${stepsHtml}<div class="sec-done" id="sd-${sec.id}">✓ ${sec.done_msg}</div></div></div></div>`;secSteps[sec.id]=0;});document.getElementById('plan-sections').innerHTML=html;setTimeout(()=>toggleSec(plan.sections[0].id),300);}
+function toggleSec(id){document.querySelectorAll('.plan-hdr').forEach(h=>h.classList.remove('open'));document.querySelectorAll('.plan-body').forEach(b=>b.classList.remove('open'));const h=document.getElementById('phdr-'+id),b=document.getElementById('pbody-'+id);if(h&&b){h.classList.add('open');b.classList.add('open');}}
+function advStep(secId,idx){const steps=document.querySelectorAll(`#pbody-${secId} .flow-step`);steps[idx].classList.remove('act');steps[idx].classList.add('done');steps[idx].querySelector('.fdot').textContent='✓';const next=idx+1;if(next<steps.length){steps[next].classList.add('act');steps[next].scrollIntoView({behavior:'smooth',block:'nearest'});}else{const d=document.getElementById('sd-'+secId);if(d)d.classList.add('show');const h=document.getElementById('phdr-'+secId);if(h)h.classList.add('completed');}}
+function confirmSignal(){document.getElementById('rp-checkin').innerHTML='<div style="background:#EAF3DE;border:1px solid #A8D5B5;border-radius:10px;padding:12px;font-size:13px;color:#1A6B3A;font-weight:600;">✓ Signal confirmed. Lesson plan calibrated.</div>';}
+function showSummary(){document.getElementById('view-plan').style.display='none';document.getElementById('view-summary').style.display='block';}
+function resetSession(){document.getElementById('view-summary').style.display='none';document.getElementById('view-checkin').style.display='block';document.getElementById('view-plan').style.display='none';document.getElementById('rp-checkin').style.display='block';document.getElementById('rp-plan').style.display='none';}
+function usePrompt(el){el.style.opacity='.4';el.style.textDecoration='line-through';}
+let chartInst=null;
+function drawMiniChart(){const canvas=document.getElementById('miniChart');if(!canvas)return;if(chartInst){chartInst.destroy();chartInst=null;}const labels=['S1','S2','S3','S4','S5','S6','S7','S8','S9','S10','S11','S12','S13','S14'];const energy=[2,2,3,2,3,4,3,2,4,3,4,4,3,3];const breaks=[0,0,1,0,0,1,1,0,1,1,1,0,1,1];const engage=[2,3,3,3,4,4,3,3,4,4,4,4,4,4];chartInst=new Chart(canvas,{type:'line',data:{labels,datasets:[{label:'Energy',data:energy,borderColor:'#C8973A',tension:.4,borderWidth:1.5,pointRadius:2,pointBackgroundColor:'#C8973A',fill:false},{label:'Breakthroughs',data:breaks.map(v=>v*4.5),borderColor:'#7F77DD',tension:.3,borderWidth:1.5,pointRadius:breaks.map(v=>v?5:2),pointBackgroundColor:breaks.map(v=>v?'#7F77DD':'rgba(127,119,221,.3)'),fill:false},{label:'Engagement',data:engage,borderColor:'#1D9E75',tension:.4,borderWidth:1.5,pointRadius:2,pointBackgroundColor:'#1D9E75',fill:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'rgba(27,42,74,.95)',titleColor:'#C8973A',bodyColor:'#fff',padding:6,cornerRadius:6}},scales:{x:{grid:{color:'rgba(255,255,255,.06)'},ticks:{color:'rgba(180,200,230,.5)',font:{size:9}}},y:{min:0,max:5,grid:{color:'rgba(255,255,255,.06)'},ticks:{color:'rgba(180,200,230,.5)',font:{size:9},stepSize:1}}}}});}
 </script>
 </body>
 </html>
