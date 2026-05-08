@@ -5,385 +5,667 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Brown Bag — Demo</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
-body{font-family:'Segoe UI',system-ui,sans-serif;background:#0D1B2E;color:#fff;min-height:100vh;}
-.nav{background:#1B2A4A;border-bottom:1px solid rgba(200,151,58,.2);display:flex;align-items:center;gap:0;padding:0 16px;height:52px;}
-.nav-logo{font-size:17px;font-weight:700;color:#fff;margin-right:24px;letter-spacing:-.3px;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:system-ui,sans-serif;background:#0D1B2E;color:#fff;min-height:100vh;}
+.nav{background:#1B2A4A;border-bottom:2px solid #C8973A;display:flex;align-items:center;padding:0 20px;height:54px;}
+.nav-logo{font-size:19px;font-weight:800;color:#fff;margin-right:28px;}
 .nav-logo em{color:#C8973A;font-style:normal;}
-.nav-tab{padding:0 14px;height:52px;display:flex;align-items:center;font-size:12px;font-weight:600;color:rgba(255,255,255,.45);cursor:pointer;border-bottom:2px solid transparent;text-transform:uppercase;letter-spacing:.06em;transition:all .2s;}
+.nav-tab{padding:0 18px;height:54px;display:flex;align-items:center;font-size:12px;font-weight:700;color:rgba(255,255,255,.4);cursor:pointer;border-bottom:3px solid transparent;text-transform:uppercase;letter-spacing:.08em;transition:all .2s;margin-bottom:-2px;}
 .nav-tab.active{color:#C8973A;border-bottom-color:#C8973A;}
-.screen{display:none;height:calc(100vh - 52px);overflow-y:auto;}
-.screen.active{display:flex;flex-direction:column;}
-.av-layout{display:grid;grid-template-columns:1fr 300px;height:100%;}
-.av-stage{background:linear-gradient(180deg,#0D1B2E,#162236);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;position:relative;}
-.av-glow{position:absolute;bottom:80px;left:50%;transform:translateX(-50%);width:160px;height:30px;background:radial-gradient(ellipse,rgba(200,151,58,.3),transparent 70%);filter:blur(10px);}
-.av-scene{width:200px;height:280px;perspective:600px;cursor:grab;user-select:none;}
+.screen{display:none;height:calc(100vh - 54px);}
+.screen.active{display:grid;}
+#screen-avatar{grid-template-columns:1fr 280px;}
+#screen-session{grid-template-columns:1fr 320px;}
+
+/* AVATAR STAGE */
+.av-stage{background:radial-gradient(ellipse at 50% 40%,#1A2A4A 0%,#0D1B2E 70%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;position:relative;overflow:hidden;}
+.av-stage::before{content:'';position:absolute;bottom:60px;left:50%;transform:translateX(-50%);width:180px;height:24px;background:rgba(200,151,58,.25);border-radius:50%;filter:blur(14px);}
+.bb-code{background:rgba(200,151,58,.1);border:1px solid rgba(200,151,58,.35);color:#C8973A;font-size:16px;font-weight:800;letter-spacing:4px;padding:7px 18px;border-radius:8px;}
+
+/* CSS 3D CHARACTER */
+.av-scene{width:220px;height:300px;perspective:700px;cursor:grab;user-select:none;position:relative;}
 .av-scene:active{cursor:grabbing;}
-.av-body-wrap{width:200px;height:280px;transform-style:preserve-3d;transition:transform .05s linear;position:relative;}
-.av-body{position:absolute;left:50px;top:80px;width:100px;height:120px;border-radius:50%;}
-.av-stripe{position:absolute;left:50px;top:126px;width:100px;height:20px;}
-.av-head{position:absolute;left:40px;top:16px;width:120px;height:110px;border-radius:50%;}
-.av-eye{position:absolute;width:20px;height:22px;background:#fff;border-radius:50%;top:44px;}
-.av-eye.l{left:62px;}.av-eye.r{right:62px;}
-.av-pupil{position:absolute;width:12px;height:14px;background:#111;border-radius:50%;top:4px;left:4px;}
-.av-shine{position:absolute;width:5px;height:5px;background:#fff;border-radius:50%;top:2px;left:8px;}
-.av-smile{position:absolute;left:72px;top:82px;width:56px;height:20px;border-bottom:3px solid rgba(130,50,50,.6);border-radius:0 0 50% 50%;}
-.av-cheek{position:absolute;width:18px;height:10px;background:rgba(255,100,120,.35);border-radius:50%;top:70px;}
-.av-cheek.l{left:52px;}.av-cheek.r{right:52px;}
-.av-arm{position:absolute;width:32px;height:60px;border-radius:16px;top:94px;}
-.av-arm.l{left:22px;transform:rotate(12deg);}.av-arm.r{right:22px;transform:rotate(-12deg);}
-.av-leg{position:absolute;width:36px;height:48px;border-radius:18px;bottom:0;}
-.av-leg.l{left:56px;transform:rotate(5deg);}.av-leg.r{right:56px;transform:rotate(-5deg);}
-.av-foot{position:absolute;width:42px;height:22px;background:#222;border-radius:50%;bottom:-4px;transform:scaleX(1.2);}
-.av-foot.l{left:46px;}.av-foot.r{right:44px;}
-.av-hair{position:absolute;left:36px;top:8px;border-radius:50% 50% 0 0;}
-.av-acc{position:absolute;font-size:22px;top:0;left:130px;}
-.av-hint{font-size:11px;color:rgba(255,255,255,.35);margin-top:12px;text-align:center;}
-.av-code{background:rgba(200,151,58,.12);border:1px solid rgba(200,151,58,.3);color:#C8973A;font-size:18px;font-weight:700;letter-spacing:3px;padding:8px 20px;border-radius:8px;margin-bottom:12px;}
-.av-panel{background:#162236;overflow-y:auto;padding:16px;}
-.av-tabs{display:flex;background:#0D1B2E;border-radius:8px;padding:3px;margin-bottom:16px;gap:2px;}
-.av-tabBtn{flex:1;padding:7px 4px;font-size:10px;font-weight:700;color:rgba(255,255,255,.4);border:none;background:transparent;border-radius:6px;cursor:pointer;text-transform:uppercase;letter-spacing:.06em;transition:all .2s;}
-.av-tabBtn.active{background:#1B2A4A;color:#fff;}
-.av-section{display:none;}.av-section.active{display:block;}
-.av-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(200,151,58,.7);margin-bottom:8px;margin-top:14px;}
-.sw-row{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:4px;}
-.sw{width:30px;height:30px;border-radius:50%;cursor:pointer;border:2.5px solid transparent;transition:all .2s;flex-shrink:0;}
-.sw.sel{border-color:#fff;transform:scale(1.18);box-shadow:0 2px 8px rgba(0,0,0,.4);}
+.av-wrap{width:220px;height:300px;transform-style:preserve-3d;position:relative;}
+
+/* Body parts */
+.av-body{position:absolute;left:55px;top:100px;width:110px;height:130px;border-radius:55px 55px 50px 50px;transition:background .3s;}
+.av-belly{position:absolute;left:70px;top:140px;width:80px;height:30px;border-radius:0 0 40px 40px;transition:background .3s;}
+.av-head{position:absolute;left:35px;top:12px;width:150px;height:130px;border-radius:50%;transition:background .3s;}
+.av-lcheek{position:absolute;left:50px;top:82px;width:24px;height:14px;background:rgba(255,120,130,.45);border-radius:50%;}
+.av-rcheek{position:absolute;right:50px;top:82px;width:24px;height:14px;background:rgba(255,120,130,.45);border-radius:50%;}
+.av-leye{position:absolute;left:68px;top:52px;width:26px;height:28px;background:#fff;border-radius:50%;}
+.av-reye{position:absolute;right:68px;top:52px;width:26px;height:28px;background:#fff;border-radius:50%;}
+.av-lpupil{position:absolute;left:7px;top:6px;width:14px;height:16px;background:#111;border-radius:50%;}
+.av-rpupil{position:absolute;left:5px;top:6px;width:14px;height:16px;background:#111;border-radius:50%;}
+.av-lshine{position:absolute;left:9px;top:3px;width:5px;height:5px;background:#fff;border-radius:50%;}
+.av-rshine{position:absolute;left:7px;top:3px;width:5px;height:5px;background:#fff;border-radius:50%;}
+.av-smile{position:absolute;left:75px;top:95px;width:70px;height:28px;border-bottom:3.5px solid rgba(120,40,40,.5);border-radius:0 0 50% 50%;}
+.av-larm{position:absolute;left:16px;top:110px;width:40px;height:75px;border-radius:20px;transform:rotate(12deg);transition:background .3s;}
+.av-rarm{position:absolute;right:16px;top:110px;width:40px;height:75px;border-radius:20px;transform:rotate(-12deg);transition:background .3s;}
+.av-lhand{position:absolute;left:12px;top:176px;width:30px;height:30px;border-radius:50%;transition:background .3s;}
+.av-rhand{position:absolute;right:12px;top:176px;width:30px;height:30px;border-radius:50%;transition:background .3s;}
+.av-lleg{position:absolute;left:60px;bottom:0;width:44px;height:60px;border-radius:22px;transform:rotate(6deg);transition:background .3s;}
+.av-rleg{position:absolute;right:60px;bottom:0;width:44px;height:60px;border-radius:22px;transform:rotate(-6deg);transition:background .3s;}
+.av-lfoot{position:absolute;left:46px;bottom:-6px;width:52px;height:26px;background:#1A1A1A;border-radius:50%;transform:scaleX(1.1);}
+.av-rfoot{position:absolute;right:44px;bottom:-6px;width:52px;height:26px;background:#1A1A1A;border-radius:50%;transform:scaleX(1.1);}
+.av-hair{position:absolute;left:32px;top:4px;width:156px;height:80px;border-radius:78px 78px 0 0;transition:all .3s;}
+.av-acc{position:absolute;font-size:26px;top:-8px;right:22px;}
+
+.av-hint{font-size:11px;color:rgba(255,255,255,.3);}
+.btn-rand{background:linear-gradient(135deg,#7F77DD,#E040FB);border:none;border-radius:10px;padding:10px 22px;font-size:13px;font-weight:800;color:#fff;cursor:pointer;transition:all .2s;}
+.btn-rand:hover{transform:translateY(-2px);}
+
+/* AVATAR PANEL */
+.av-panel{background:#162236;overflow-y:auto;padding:16px;border-left:1px solid rgba(255,255,255,.07);}
+.av-tabs{display:flex;background:#0D1B2E;border-radius:8px;padding:3px;margin-bottom:14px;gap:2px;}
+.av-tab-btn{flex:1;padding:7px 2px;font-size:10px;font-weight:700;color:rgba(255,255,255,.4);border:none;background:transparent;border-radius:6px;cursor:pointer;text-transform:uppercase;letter-spacing:.05em;transition:all .2s;}
+.av-tab-btn.active{background:#1B2A4A;color:#fff;}
+.av-sec{display:none;}.av-sec.active{display:block;}
+.av-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(200,151,58,.7);margin:12px 0 7px;}
+.sw-row{display:flex;flex-wrap:wrap;gap:7px;}
+.sw{width:30px;height:30px;border-radius:50%;cursor:pointer;border:2.5px solid transparent;transition:all .2s;}
+.sw.sel{border-color:#fff;transform:scale(1.2);box-shadow:0 2px 8px rgba(0,0,0,.5);}
+.sw:hover{transform:scale(1.1);}
 .chip-row{display:flex;flex-wrap:wrap;gap:6px;}
 .chip{padding:6px 11px;border-radius:20px;border:1.5px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);font-size:11px;font-weight:600;color:rgba(255,255,255,.5);cursor:pointer;transition:all .2s;}
+.chip:hover{border-color:rgba(255,255,255,.3);}
 .chip.sel{background:#C8973A;border-color:#C8973A;color:#1B2A4A;}
 .outfit-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
 .outfit-card{background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.08);border-radius:10px;padding:10px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:8px;}
-.outfit-card.sel{border-color:#C8973A;background:rgba(200,151,58,.1);}
-.outfit-swatch{width:36px;height:36px;border-radius:7px;flex-shrink:0;}
+.outfit-card:hover{border-color:rgba(255,255,255,.2);}
+.outfit-card.sel{border-color:#C8973A;background:rgba(200,151,58,.12);}
+.outfit-swatch{width:34px;height:34px;border-radius:7px;flex-shrink:0;}
 .outfit-name{font-size:11px;font-weight:700;color:#fff;}
 .outfit-sub{font-size:10px;color:rgba(255,255,255,.4);}
-.badge-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
-.badge-item{background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.07);border-radius:10px;padding:10px 6px;text-align:center;opacity:.4;filter:grayscale(.7);}
-.badge-emoji{font-size:24px;display:block;margin-bottom:4px;}
-.badge-name{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:rgba(255,255,255,.4);}
-.zero-msg{background:rgba(127,119,221,.1);border:1.5px solid rgba(127,119,221,.25);border-radius:10px;padding:14px;text-align:center;margin-bottom:14px;}
-.zero-msg p:first-child{font-size:28px;margin-bottom:6px;}
-.zero-msg p:last-child{font-size:11px;color:rgba(255,255,255,.45);line-height:1.6;}
-.av-save{width:100%;background:linear-gradient(135deg,#C8973A,#E8A840);border:none;border-radius:9px;padding:12px;font-size:13px;font-weight:800;color:#1B2A4A;cursor:pointer;margin-top:16px;}
-.sess-layout{display:grid;grid-template-columns:1fr 340px;height:100%;}
+.badge-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;}
+.badge-item{background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.06);border-radius:9px;padding:9px 5px;text-align:center;opacity:.38;filter:grayscale(.8);}
+.badge-emoji{font-size:22px;display:block;margin-bottom:4px;}
+.badge-name{font-size:8.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:rgba(255,255,255,.4);}
+.zero-note{background:rgba(127,119,221,.1);border:1px solid rgba(127,119,221,.25);border-radius:9px;padding:12px;text-align:center;margin-bottom:12px;font-size:11px;color:rgba(255,255,255,.45);line-height:1.6;}
+.btn-save{width:100%;background:linear-gradient(135deg,#C8973A,#E8A840);border:none;border-radius:9px;padding:12px;font-size:13px;font-weight:800;color:#1B2A4A;cursor:pointer;margin-top:14px;transition:all .2s;}
+.btn-save:hover{transform:translateY(-1px);}
+
+/* SESSION */
 .sess-main{background:#FAF6F0;overflow-y:auto;padding:20px;}
-.sess-right{background:#F0EAE0;overflow-y:auto;padding:16px;border-left:1px solid #E0D4C0;}
-.ci-header{background:#1B2A4A;border-radius:14px;padding:16px 18px;display:flex;align-items:center;gap:12px;margin-bottom:16px;}
-.ci-avatar{width:44px;height:44px;border-radius:50%;background:#C8973A;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;color:#1B2A4A;}
-.ci-name{font-size:16px;font-weight:700;color:#fff;}
+.sess-panel{background:#F0EAE0;overflow-y:auto;padding:16px;border-left:1px solid #E0D4C0;}
+.eyebrow{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#C8973A;margin-bottom:3px;}
+.s-title{font-size:21px;font-weight:800;color:#1B2A4A;margin-bottom:4px;}
+.s-sub{font-size:13px;color:#4A3F30;line-height:1.6;margin-bottom:14px;}
+.ci-top{background:#1B2A4A;border-radius:13px;padding:15px 17px;display:flex;align-items:center;gap:12px;margin-bottom:13px;}
+.ci-av{width:42px;height:42px;border-radius:50%;background:#C8973A;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;color:#1B2A4A;}
+.ci-name{font-size:15px;font-weight:700;color:#fff;}
 .ci-meta{font-size:11px;color:rgba(180,200,230,.6);}
-.ci-tag{background:rgba(200,151,58,.2);color:#C8973A;font-size:10px;font-weight:600;padding:3px 9px;border-radius:12px;border:1px solid rgba(200,151,58,.3);margin-left:auto;}
-.ci-card{background:#fff;border:1px solid #E0D4C0;border-radius:12px;padding:14px 16px;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,.04);}
-.ci-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:#9A8C78;margin-bottom:9px;}
+.ci-tag{background:rgba(200,151,58,.2);color:#C8973A;font-size:10px;font-weight:600;padding:3px 9px;border-radius:11px;border:1px solid rgba(200,151,58,.3);margin-left:auto;}
+.card{background:#fff;border:1px solid #E0D4C0;border-radius:11px;padding:13px 15px;margin-bottom:9px;box-shadow:0 1px 4px rgba(0,0,0,.04);}
+.c-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:#9A8C78;margin-bottom:9px;}
 .scale-row{display:flex;gap:6px;}
-.sc-btn{flex:1;aspect-ratio:1;border-radius:8px;border:1.5px solid #E0D4C0;background:#F8F3EC;font-size:13px;font-weight:700;color:#9A8C78;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;}
-.sc-btn.s-red{background:#FDECEA;border-color:#C0392B;color:#C0392B;}
-.sc-btn.s-amb{background:#FEF5E7;border-color:#E67E22;color:#E67E22;}
-.sc-btn.s-grn{background:#EAF3DE;border-color:#1A6B3A;color:#1A6B3A;}
+.sc{flex:1;aspect-ratio:1;border-radius:7px;border:1.5px solid #E0D4C0;background:#F8F3EC;font-size:13px;font-weight:700;color:#9A8C78;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;}
+.sc.r{background:#FDECEA;border-color:#C0392B;color:#C0392B;}
+.sc.a{background:#FEF5E7;border-color:#E67E22;color:#E67E22;}
+.sc.g{background:#EAF3DE;border-color:#1A6B3A;color:#1A6B3A;}
 .mood-row{display:flex;flex-wrap:wrap;gap:6px;}
-.mood-btn{padding:6px 11px;border-radius:20px;border:1.5px solid #E0D4C0;background:#F8F3EC;font-size:12px;font-weight:600;color:#4A3F30;cursor:pointer;transition:all .2s;}
-.mood-btn.sel{background:#1B2A4A;border-color:#1B2A4A;color:#fff;}
-.signal-box{border-radius:12px;padding:12px 14px;display:flex;align-items:flex-start;gap:10px;margin-top:10px;font-size:13px;line-height:1.55;}
-.sig-caution{background:#FEF5E7;border:1.5px solid #F0C070;}
-.sig-break{background:#EAF3DE;border:1.5px solid #A8D5B5;}
-.sig-rest{background:#FDECEA;border:1.5px solid #E8B0A8;}
-.plan-card{background:#fff;border:1.5px solid #E0D4C0;border-radius:12px;margin-bottom:8px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.04);}
-.plan-hdr{padding:13px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:background .2s;}
+.mood{padding:6px 10px;border-radius:18px;border:1.5px solid #E0D4C0;background:#F8F3EC;font-size:12px;font-weight:600;color:#4A3F30;cursor:pointer;transition:all .2s;}
+.mood.sel{background:#1B2A4A;border-color:#1B2A4A;color:#fff;}
+.sig{border-radius:11px;padding:11px 13px;display:flex;align-items:flex-start;gap:9px;margin-top:9px;font-size:13px;line-height:1.5;}
+.sig.caution{background:#FEF5E7;border:1.5px solid #F0C070;}
+.sig.go{background:#EAF3DE;border:1.5px solid #A8D5B5;}
+.sig.slow{background:#FDECEA;border:1.5px solid #E8B0A8;}
+.sig-icon{font-size:18px;flex-shrink:0;margin-top:1px;}
+.sig-title{font-size:13px;font-weight:700;margin-bottom:2px;}
+.sig.caution .sig-title{color:#E67E22;}.sig.go .sig-title{color:#1A6B3A;}.sig.slow .sig-title{color:#C0392B;}
+.sig-body{font-size:12px;color:#4A3F30;}
+.btn-p{background:#1B2A4A;border:none;border-radius:9px;padding:11px 20px;font-size:13px;font-weight:700;color:#fff;cursor:pointer;transition:all .2s;width:100%;margin-top:12px;}
+.btn-p:hover{background:#243660;}
+.btn-gold{background:linear-gradient(135deg,#C8973A,#E8A840);border:none;border-radius:9px;padding:11px 20px;font-size:13px;font-weight:700;color:#1B2A4A;cursor:pointer;width:100%;margin-top:12px;}
+.gen-box{background:#1B2A4A;border-radius:11px;padding:22px;text-align:center;margin-bottom:13px;}
+.gen-spin{width:34px;height:34px;border:2.5px solid rgba(200,151,58,.2);border-top-color:#C8973A;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 11px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.gen-t{font-size:14px;font-weight:700;color:#fff;margin-bottom:4px;}
+.gen-s{font-size:11px;color:rgba(180,200,230,.5);line-height:1.6;}
+.plan-card{background:#fff;border:1.5px solid #E0D4C0;border-radius:11px;margin-bottom:8px;overflow:hidden;}
+.plan-hdr{padding:12px 15px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:background .2s;}
 .plan-hdr:hover{background:#F8F3EC;}
 .plan-hdr.open{background:#1B2A4A;}
-.plan-hdr.open .phdr-label{color:#C8973A;}
-.plan-hdr.open .phdr-title{color:#fff;}
-.plan-hdr.open .phdr-chev{color:rgba(255,255,255,.5);transform:rotate(180deg);}
-.phdr-num{width:30px;height:30px;border-radius:50%;background:#FDF6E8;border:1.5px solid #F5E6CC;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#C8973A;flex-shrink:0;transition:all .3s;}
-.plan-hdr.open .phdr-num{background:#C8973A;border-color:#C8973A;color:#1B2A4A;}
-.plan-hdr.completed .phdr-num{background:#1D9E75;border-color:#1D9E75;color:#fff;font-size:12px;}
-.phdr-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:#C8973A;margin-bottom:2px;}
-.phdr-title{font-size:14px;font-weight:700;color:#1B2A4A;}
-.phdr-dur{font-size:10px;color:#9A8C78;}
-.phdr-chev{font-size:14px;color:#9A8C78;transition:transform .3s;}
+.plan-hdr.open .ph-lbl{color:#C8973A;}.plan-hdr.open .ph-title{color:#fff;}.plan-hdr.open .ph-chev{color:rgba(255,255,255,.4);transform:rotate(180deg);}
+.plan-hdr.done-sec .ph-num{background:#1D9E75;border-color:#1D9E75;color:#fff;}
+.ph-num{width:28px;height:28px;border-radius:50%;background:#FDF6E8;border:1.5px solid #F5E6CC;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#C8973A;flex-shrink:0;transition:all .3s;}
+.plan-hdr.open .ph-num{background:#C8973A;border-color:#C8973A;color:#1B2A4A;}
+.ph-lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:#C8973A;margin-bottom:2px;}
+.ph-title{font-size:13px;font-weight:700;color:#1B2A4A;}
+.ph-chev{font-size:13px;color:#9A8C78;transition:transform .3s;}
 .plan-body{max-height:0;overflow:hidden;transition:max-height .4s ease;}
-.plan-body.open{max-height:600px;}
-.plan-body-inner{padding:14px 16px;background:#fff;}
-.flow-step{display:flex;gap:10px;padding:10px 8px;border-bottom:1px solid #F0EAE0;cursor:pointer;border-radius:8px;transition:background .2s;}
-.flow-step:last-child{border-bottom:none;}
-.flow-step:hover{background:#FAF6F0;}
-.flow-step.act{background:#FDF6E8;border-left:3px solid #C8973A;padding-left:12px;}
-.flow-step.done{opacity:.6;}
-.fdot{width:24px;height:24px;border-radius:50%;border:1.5px solid #E0D4C0;background:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#9A8C78;flex-shrink:0;transition:all .3s;}
-.flow-step.act .fdot{background:#1B2A4A;border-color:#1B2A4A;color:#fff;}
-.flow-step.done .fdot{background:#1D9E75;border-color:#1D9E75;color:#fff;}
-.fline{width:1.5px;flex:1;background:#E0D4C0;min-height:14px;margin-top:3px;}
-.flow-step.done .fline{background:#1D9E75;}
-.ftitle{font-size:13px;font-weight:600;color:#1A1207;margin-bottom:3px;}
-.flow-step.act .ftitle{color:#1B2A4A;}
-.fbody{font-size:12px;color:#4A3F30;line-height:1.6;margin-bottom:6px;}
-.fnote{background:#FDF6E8;border-left:2.5px solid #C8973A;padding:6px 10px;font-size:11px;color:#7A5010;display:none;}
-.flow-step.act .fnote{display:block;}
-.fbtns{display:none;gap:6px;margin-top:8px;}
-.flow-step.act .fbtns{display:flex;}
-.fbtn{background:#1B2A4A;border:none;border-radius:7px;padding:6px 13px;font-size:11px;font-weight:700;color:#fff;cursor:pointer;}
-.fskip{background:transparent;border:1px solid #E0D4C0;border-radius:7px;padding:6px 10px;font-size:11px;color:#9A8C78;cursor:pointer;}
-.sec-done{background:#1D9E75;border-radius:6px;padding:8px;font-size:11px;font-weight:700;color:#fff;text-align:center;margin-top:8px;display:none;}
-.sec-done.show{display:block;}
-.sum-hero{background:linear-gradient(135deg,#1B2A4A,#243660);border-radius:14px;padding:20px;text-align:center;margin-bottom:14px;}
-.sum-emoji{font-size:36px;margin-bottom:8px;}
-.sum-name{font-size:17px;font-weight:700;color:#fff;margin-bottom:3px;}
-.sum-date{font-size:11px;color:rgba(180,200,230,.6);margin-bottom:14px;}
-.sum-stats{display:flex;justify-content:center;gap:24px;}
-.stat-v{font-size:22px;font-weight:700;color:#C8973A;}
-.stat-l{font-size:10px;color:rgba(180,200,230,.5);margin-top:2px;}
-.sum-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
-.sum-card{background:#fff;border:1px solid #E0D4C0;border-radius:12px;padding:12px 14px;}
-.scard-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#9A8C78;margin-bottom:4px;}
-.scard-body{font-size:13px;color:#1A1207;line-height:1.6;}
-.parent-msg{background:#fff;border:1px solid #E0D4C0;border-radius:12px;padding:14px;}
-.pmsg-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#C8973A;margin-bottom:7px;}
-.pmsg-body{font-size:13px;color:#1A1207;line-height:1.7;background:#FAF6F0;padding:10px 12px;border-radius:7px;font-style:italic;}
-.gen-box{background:#1B2A4A;border-radius:12px;padding:24px;text-align:center;margin-bottom:14px;}
-.gen-spin{width:36px;height:36px;border:2.5px solid rgba(200,151,58,.2);border-top-color:#C8973A;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 12px;}
-@keyframes spin{to{transform:rotate(360deg);}}
-.gen-title{font-size:15px;font-weight:700;color:#fff;margin-bottom:4px;}
-.gen-sub{font-size:11px;color:rgba(180,200,230,.5);line-height:1.6;}
-.prompt-chip{background:#FAF6F0;border:1px solid #E0D4C0;border-radius:7px;padding:8px 11px 8px 28px;font-size:12px;color:#1A1207;line-height:1.5;position:relative;cursor:pointer;margin-bottom:6px;transition:all .2s;}
-.prompt-chip:hover{border-color:#1B2A4A;}
-.prompt-chip::before{content:"💬";position:absolute;left:8px;top:8px;font-size:11px;}
-.btn-primary{background:#1B2A4A;border:none;border-radius:9px;padding:11px 22px;font-size:13px;font-weight:700;color:#fff;cursor:pointer;transition:all .2s;margin-top:8px;}
-.btn-gold{background:linear-gradient(135deg,#C8973A,#E8A840);border:none;border-radius:9px;padding:11px 22px;font-size:13px;font-weight:700;color:#1B2A4A;cursor:pointer;transition:all .2s;margin-top:8px;}
-.section-eyebrow{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#C8973A;margin-bottom:3px;}
-.section-title{font-size:20px;font-weight:700;color:#1B2A4A;margin-bottom:4px;}
-.section-sub{font-size:13px;color:#4A3F30;line-height:1.6;margin-bottom:14px;}
-.sess-right-title{font-size:16px;font-weight:700;color:#1B2A4A;margin-bottom:4px;}
-.sess-right-sub{font-size:12px;color:#9A8C78;margin-bottom:16px;line-height:1.5;}
-canvas{width:100%;height:140px;display:block;}
+.plan-body.open{max-height:700px;}
+.plan-inner{padding:13px 15px;}
+.step-tag{display:inline-block;font-size:10px;font-weight:700;padding:2px 9px;border-radius:18px;margin-bottom:9px;}
+.fs{display:flex;gap:9px;padding:9px 7px;border-bottom:1px solid #F0EAE0;cursor:pointer;border-radius:7px;transition:background .2s;}
+.fs:last-of-type{border-bottom:none;}
+.fs:hover{background:#FAF6F0;}
+.fs.act{background:#FDF6E8;border-left:3px solid #C8973A;padding-left:11px;}
+.fs.done{opacity:.58;}
+.fdot{width:22px;height:22px;border-radius:50%;border:1.5px solid #E0D4C0;background:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#9A8C78;flex-shrink:0;transition:all .3s;}
+.fs.act .fdot{background:#1B2A4A;border-color:#1B2A4A;color:#fff;}
+.fs.done .fdot{background:#1D9E75;border-color:#1D9E75;color:#fff;}
+.fline{width:1.5px;flex:1;background:#E0D4C0;min-height:13px;margin-top:3px;}
+.fs.done .fline{background:#1D9E75;}
+.ft{font-size:13px;font-weight:600;color:#1A1207;margin-bottom:3px;}
+.fs.act .ft{color:#1B2A4A;}
+.fb{font-size:12px;color:#4A3F30;line-height:1.6;margin-bottom:5px;}
+.fn{background:#FDF6E8;border-left:2.5px solid #C8973A;padding:6px 9px;font-size:11px;color:#7A5010;display:none;}
+.fs.act .fn{display:block;}
+.fbtns{display:none;gap:6px;margin-top:7px;}
+.fs.act .fbtns{display:flex;}
+.fbtn{background:#1B2A4A;border:none;border-radius:6px;padding:6px 12px;font-size:11px;font-weight:700;color:#fff;cursor:pointer;}
+.fskp{background:transparent;border:1px solid #E0D4C0;border-radius:6px;padding:6px 9px;font-size:11px;color:#9A8C78;cursor:pointer;}
+.sec-ok{background:#1D9E75;border-radius:6px;padding:7px;font-size:11px;font-weight:700;color:#fff;text-align:center;margin-top:7px;display:none;}
+.sec-ok.show{display:block;}
+.sum-hero{background:linear-gradient(135deg,#1B2A4A,#243660);border-radius:13px;padding:20px;text-align:center;margin-bottom:13px;}
+.sum-stats{display:flex;justify-content:center;gap:22px;margin-top:14px;}
+.sv{font-size:22px;font-weight:800;color:#C8973A;}
+.sl{font-size:10px;color:rgba(180,200,230,.5);margin-top:2px;}
+.sum-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:11px;}
+.sc-card{background:#fff;border:1px solid #E0D4C0;border-radius:11px;padding:11px 13px;}
+.sc-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#9A8C78;margin-bottom:4px;}
+.sc-body{font-size:13px;color:#1A1207;line-height:1.6;}
+.pmsg{background:#fff;border:1px solid #E0D4C0;border-radius:11px;padding:13px;}
+.pm-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#C8973A;margin-bottom:7px;}
+.pm-body{font-size:13px;color:#1A1207;line-height:1.7;background:#FAF6F0;padding:9px 11px;border-radius:7px;font-style:italic;}
+.sp-title{font-size:15px;font-weight:700;color:#1B2A4A;margin-bottom:4px;}
+.sp-sub{font-size:12px;color:#9A8C78;margin-bottom:14px;line-height:1.5;}
+.pchip{background:#FAF6F0;border:1px solid #E0D4C0;border-radius:7px;padding:8px 10px 8px 26px;font-size:12px;color:#1A1207;line-height:1.5;position:relative;cursor:pointer;margin-bottom:6px;transition:all .2s;}
+.pchip:hover{border-color:#1B2A4A;}
+.pchip::before{content:"💬";position:absolute;left:8px;top:8px;font-size:11px;}
+canvas{width:100%;height:130px;display:block;}
 </style>
 </head>
 <body>
 <div class="nav">
   <div class="nav-logo">Brown<em>Bag</em></div>
-  <div class="nav-tab active" onclick="switchScreen('avatar')">My Avatar</div>
-  <div class="nav-tab" onclick="switchScreen('session')">Tutor Session</div>
+  <div class="nav-tab active" id="tab-avatar" onclick="switchTo('avatar')">My Avatar</div>
+  <div class="nav-tab" id="tab-session" onclick="switchTo('session')">Tutor Session</div>
 </div>
+
+<!-- AVATAR SCREEN -->
 <div class="screen active" id="screen-avatar">
-  <div class="av-layout">
-    <div class="av-stage">
-      <div class="av-glow"></div>
-      <div class="av-code">BB-4729</div>
-      <div class="av-scene" id="avScene">
-        <div class="av-body-wrap" id="avBodyWrap">
-          <div class="av-leg l" id="legL" style="background:#1B2A4A;"></div>
-          <div class="av-leg r" id="legR" style="background:#1B2A4A;"></div>
-          <div class="av-foot l"></div>
-          <div class="av-foot r"></div>
-          <div class="av-body" id="avBody" style="background:#1B2A4A;"></div>
-          <div class="av-stripe" id="avStripe" style="background:#C8973A;"></div>
-          <div class="av-arm l" id="armL" style="background:#1B2A4A;"></div>
-          <div class="av-arm r" id="armR" style="background:#1B2A4A;"></div>
-          <div class="av-head" id="avHead" style="background:#FDDBB4;"></div>
-          <div class="av-cheek l"></div>
-          <div class="av-cheek r"></div>
-          <div class="av-eye l"><div class="av-pupil"></div><div class="av-shine"></div></div>
-          <div class="av-eye r"><div class="av-pupil"></div><div class="av-shine"></div></div>
-          <div class="av-smile"></div>
-          <div class="av-hair" id="avHair"></div>
-          <div class="av-acc" id="avAcc">🦋</div>
-        </div>
+  <div class="av-stage">
+    <div class="bb-code">BB-4729</div>
+    <div class="av-scene" id="avScene">
+      <div class="av-wrap" id="avWrap">
+        <div class="av-lleg" id="lleg" style="background:#1B2A4A;"></div>
+        <div class="av-rleg" id="rleg" style="background:#1B2A4A;"></div>
+        <div class="av-lfoot"></div><div class="av-rfoot"></div>
+        <div class="av-body" id="avbody" style="background:#1B2A4A;"></div>
+        <div class="av-belly" id="avbelly" style="background:#C8973A;"></div>
+        <div class="av-larm" id="larm" style="background:#1B2A4A;"></div>
+        <div class="av-rarm" id="rarm" style="background:#1B2A4A;"></div>
+        <div class="av-lhand" id="lhand" style="background:#FDDBB4;"></div>
+        <div class="av-rhand" id="rhand" style="background:#FDDBB4;"></div>
+        <div class="av-head" id="avhead" style="background:#FDDBB4;"></div>
+        <div class="av-lcheek"></div><div class="av-rcheek"></div>
+        <div class="av-leye"><div class="av-lpupil" id="lpupil"></div><div class="av-lshine"></div></div>
+        <div class="av-reye"><div class="av-rpupil" id="rpupil"></div><div class="av-rshine"></div></div>
+        <div class="av-smile"></div>
+        <div class="av-hair" id="avhair" style="background:#1A0A00;"></div>
+        <div class="av-acc" id="avacc">🦋</div>
       </div>
-      <div class="av-hint">Drag to spin 360°</div>
-      <button style="margin-top:12px;background:linear-gradient(135deg,#7F77DD,#E040FB);border:none;border-radius:10px;padding:10px 24px;font-size:13px;font-weight:800;color:white;cursor:pointer;" onclick="randomize()">🎲 Randomize</button>
     </div>
-    <div class="av-panel">
-      <div class="av-tabs">
-        <button class="av-tabBtn active" onclick="avTab('skin')">Skin</button>
-        <button class="av-tabBtn" onclick="avTab('hair')">Hair</button>
-        <button class="av-tabBtn" onclick="avTab('outfit')">Outfit</button>
-        <button class="av-tabBtn" onclick="avTab('badges')">Badges</button>
-      </div>
-      <div class="av-section active" id="sec-skin">
-        <div class="av-lbl">Skin tone</div>
-        <div class="sw-row" id="sw-skin">
-          <div class="sw sel" style="background:#FDDBB4;" onclick="setSkin('#FDDBB4',this)"></div>
-          <div class="sw" style="background:#F0C27F;" onclick="setSkin('#F0C27F',this)"></div>
-          <div class="sw" style="background:#C68642;" onclick="setSkin('#C68642',this)"></div>
-          <div class="sw" style="background:#8D5524;" onclick="setSkin('#8D5524',this)"></div>
-          <div class="sw" style="background:#4A3728;" onclick="setSkin('#4A3728',this)"></div>
-          <div class="sw" style="background:#8EC5FC;" onclick="setSkin('#8EC5FC',this)"></div>
-          <div class="sw" style="background:#A8E063;" onclick="setSkin('#A8E063',this)"></div>
-          <div class="sw" style="background:#E040FB;" onclick="setSkin('#E040FB',this)"></div>
-        </div>
-        <div class="av-lbl">Eyes</div>
-        <div class="chip-row" id="eye-row">
-          <div class="chip sel" onclick="setEye('round',this)">Round</div>
-          <div class="chip" onclick="setEye('star',this)">Star ⭐</div>
-          <div class="chip" onclick="setEye('heart',this)">Heart ♥</div>
-          <div class="chip" onclick="setEye('cool',this)">Shades 😎</div>
-          <div class="chip" onclick="setEye('sleepy',this)">Chill 😴</div>
-        </div>
-      </div>
-      <div class="av-section" id="sec-hair">
-        <div class="av-lbl">Style</div>
-        <div class="chip-row" id="hair-row">
-          <div class="chip sel" onclick="setHairStyle('afro',this)">Afro</div>
-          <div class="chip" onclick="setHairStyle('locs',this)">Locs</div>
-          <div class="chip" onclick="setHairStyle('braids',this)">Braids</div>
-          <div class="chip" onclick="setHairStyle('fade',this)">Fade</div>
-          <div class="chip" onclick="setHairStyle('curly',this)">Curly</div>
-          <div class="chip" onclick="setHairStyle('bun',this)">Bun</div>
-          <div class="chip" onclick="setHairStyle('bald',this)">Clean</div>
-        </div>
-        <div class="av-lbl">Color</div>
-        <div class="sw-row" id="sw-hair">
-          <div class="sw sel" style="background:#1A0A00;" onclick="setHairColor('#1A0A00',this)"></div>
-          <div class="sw" style="background:#4A2800;" onclick="setHairColor('#4A2800',this)"></div>
-          <div class="sw" style="background:#C68642;" onclick="setHairColor('#C68642',this)"></div>
-          <div class="sw" style="background:#E0E0E0;" onclick="setHairColor('#E0E0E0',this)"></div>
-          <div class="sw" style="background:#FF1744;" onclick="setHairColor('#FF1744',this)"></div>
-          <div class="sw" style="background:#E040FB;" onclick="setHairColor('#E040FB',this)"></div>
-          <div class="sw" style="background:#00BCD4;" onclick="setHairColor('#00BCD4',this)"></div>
-          <div class="sw" style="background:#FFD740;" onclick="setHairColor('#FFD740',this)"></div>
-        </div>
-      </div>
-      <div class="av-section" id="sec-outfit">
-        <div class="av-lbl">Outfit</div>
-        <div class="outfit-grid" id="outfit-grid">
-          <div class="outfit-card sel" onclick="setOutfit('#1B2A4A','#C8973A',this)"><div class="outfit-swatch" style="background:linear-gradient(135deg,#1B2A4A,#2E4480);"></div><div><div class="outfit-name">Navy Drip</div><div class="outfit-sub">Classic</div></div></div>
-          <div class="outfit-card" onclick="setOutfit('#D85A30','#FF8A65',this)"><div class="outfit-swatch" style="background:linear-gradient(135deg,#D85A30,#FF8A65);"></div><div><div class="outfit-name">Flame Up</div><div class="outfit-sub">Athletic</div></div></div>
-          <div class="outfit-card" onclick="setOutfit('#7F77DD','#E040FB',this)"><div class="outfit-swatch" style="background:linear-gradient(135deg,#7F77DD,#E040FB);"></div><div><div class="outfit-name">Galaxy</div><div class="outfit-sub">Cosmic</div></div></div>
-          <div class="outfit-card" onclick="setOutfit('#1D9E75','#A8E063',this)"><div class="outfit-swatch" style="background:linear-gradient(135deg,#1D9E75,#A8E063);"></div><div><div class="outfit-name">Forest</div><div class="outfit-sub">Fresh</div></div></div>
-          <div class="outfit-card" onclick="setOutfit('#FF1744','#FFD740',this)"><div class="outfit-swatch" style="background:linear-gradient(135deg,#FF1744,#FFD740);"></div><div><div class="outfit-name">Fire &amp; Ice</div><div class="outfit-sub">Bold</div></div></div>
-          <div class="outfit-card" onclick="setOutfit('#C8973A','#FFF9C4',this)"><div class="outfit-swatch" style="background:linear-gradient(135deg,#C8973A,#FFF9C4);"></div><div><div class="outfit-name">Gold Rush</div><div class="outfit-sub">Legendary</div></div></div>
-        </div>
-        <div class="av-lbl">Accessory</div>
-        <div class="chip-row" id="acc-row">
-          <div class="chip sel" onclick="setAcc('🦋',this)">🦋 Butterfly</div>
-          <div class="chip" onclick="setAcc('👑',this)">👑 Crown</div>
-          <div class="chip" onclick="setAcc('🎧',this)">🎧 Beats</div>
-          <div class="chip" onclick="setAcc('⭐',this)">⭐ Star</div>
-          <div class="chip" onclick="setAcc('',this)">✨ Clean</div>
-        </div>
-      </div>
-      <div class="av-section" id="sec-badges">
-        <div class="zero-msg"><p>🦋</p><p>You start at zero. Every badge is earned through sessions and breakthroughs. Your first one is waiting.</p></div>
-        <div class="badge-grid">
-          <div class="badge-item"><span class="badge-emoji">🦋</span><div class="badge-name">First Wing</div></div>
-          <div class="badge-item"><span class="badge-emoji">⚡</span><div class="badge-name">Spark</div></div>
-          <div class="badge-item"><span class="badge-emoji">🏀</span><div class="badge-name">Baller</div></div>
-          <div class="badge-item"><span class="badge-emoji">🧠</span><div class="badge-name">Deep Think</div></div>
-          <div class="badge-item"><span class="badge-emoji">🔥</span><div class="badge-name">On Fire</div></div>
-          <div class="badge-item"><span class="badge-emoji">🚀</span><div class="badge-name">Breakthrough</div></div>
-          <div class="badge-item"><span class="badge-emoji">💎</span><div class="badge-name">Diamond</div></div>
-          <div class="badge-item"><span class="badge-emoji">🏆</span><div class="badge-name">Champion</div></div>
-        </div>
-      </div>
-      <button class="av-save" onclick="switchScreen('session')">Save Avatar → Go to Session</button>
+    <div class="av-hint">Drag to spin 360°</div>
+    <button class="btn-rand" onclick="randomize()">🎲 Randomize</button>
+  </div>
+  <div class="av-panel">
+    <div class="av-tabs">
+      <button class="av-tab-btn active" onclick="avTab('skin',this)">Skin</button>
+      <button class="av-tab-btn" onclick="avTab('hair',this)">Hair</button>
+      <button class="av-tab-btn" onclick="avTab('outfit',this)">Outfit</button>
+      <button class="av-tab-btn" onclick="avTab('badges',this)">Badges</button>
     </div>
+    <div class="av-sec active" id="asec-skin">
+      <div class="av-lbl">Skin Tone</div>
+      <div class="sw-row" id="sw-skin">
+        <div class="sw sel" style="background:#FDDBB4;" onclick="setSkin('#FDDBB4',this)"></div>
+        <div class="sw" style="background:#F0C27F;" onclick="setSkin('#F0C27F',this)"></div>
+        <div class="sw" style="background:#C68642;" onclick="setSkin('#C68642',this)"></div>
+        <div class="sw" style="background:#8D5524;" onclick="setSkin('#8D5524',this)"></div>
+        <div class="sw" style="background:#4A3728;" onclick="setSkin('#4A3728',this)"></div>
+        <div class="sw" style="background:#8EC5FC;" onclick="setSkin('#8EC5FC',this)"></div>
+        <div class="sw" style="background:#A8E063;" onclick="setSkin('#A8E063',this)"></div>
+        <div class="sw" style="background:#E040FB;" onclick="setSkin('#E040FB',this)"></div>
+      </div>
+      <div class="av-lbl">Eyes</div>
+      <div class="chip-row">
+        <div class="chip sel" onclick="setEyes('normal',this)">Round</div>
+        <div class="chip" onclick="setEyes('star',this)">Star ⭐</div>
+        <div class="chip" onclick="setEyes('heart',this)">Heart ♥</div>
+        <div class="chip" onclick="setEyes('cool',this)">Shades 😎</div>
+        <div class="chip" onclick="setEyes('sleepy',this)">Chill 😴</div>
+      </div>
+    </div>
+    <div class="av-sec" id="asec-hair">
+      <div class="av-lbl">Style</div>
+      <div class="chip-row" id="chip-hair">
+        <div class="chip sel" onclick="setHairStyle('afro',this)">Afro</div>
+        <div class="chip" onclick="setHairStyle('locs',this)">Locs</div>
+        <div class="chip" onclick="setHairStyle('braids',this)">Braids</div>
+        <div class="chip" onclick="setHairStyle('fade',this)">Fade</div>
+        <div class="chip" onclick="setHairStyle('curly',this)">Curly</div>
+        <div class="chip" onclick="setHairStyle('bun',this)">Bun</div>
+        <div class="chip" onclick="setHairStyle('bald',this)">Clean</div>
+      </div>
+      <div class="av-lbl">Color</div>
+      <div class="sw-row" id="sw-hair">
+        <div class="sw sel" style="background:#1A0A00;" onclick="setHairColor('#1A0A00',this)"></div>
+        <div class="sw" style="background:#4A2800;" onclick="setHairColor('#4A2800',this)"></div>
+        <div class="sw" style="background:#C68642;" onclick="setHairColor('#C68642',this)"></div>
+        <div class="sw" style="background:#E0E0E0;" onclick="setHairColor('#E0E0E0',this)"></div>
+        <div class="sw" style="background:#FF1744;" onclick="setHairColor('#FF1744',this)"></div>
+        <div class="sw" style="background:#E040FB;" onclick="setHairColor('#E040FB',this)"></div>
+        <div class="sw" style="background:#00BCD4;" onclick="setHairColor('#00BCD4',this)"></div>
+        <div class="sw" style="background:#FFD740;" onclick="setHairColor('#FFD740',this)"></div>
+      </div>
+    </div>
+    <div class="av-sec" id="asec-outfit">
+      <div class="av-lbl">Outfit</div>
+      <div class="outfit-grid" id="outfit-grid">
+        <div class="outfit-card sel" onclick="setOutfit('#1B2A4A','#C8973A',this)"><div class="outfit-swatch" style="background:linear-gradient(135deg,#1B2A4A,#2E4480);"></div><div><div class="outfit-name">Navy Drip</div><div class="outfit-sub">Classic</div></div></div>
+        <div class="outfit-card" onclick="setOutfit('#D85A30','#FF8A65',this)"><div class="outfit-swatch" style="background:linear-gradient(135deg,#D85A30,#FF8A65);"></div><div><div class="outfit-name">Flame Up</div><div class="outfit-sub">Athletic</div></div></div>
+        <div class="outfit-card" onclick="setOutfit('#7F77DD','#E040FB',this)"><div class="outfit-swatch" style="background:linear-gradient(135deg,#7F77DD,#E040FB);"></div><div><div class="outfit-name">Galaxy</div><div class="outfit-sub">Cosmic</div></div></div>
+        <div class="outfit-card" onclick="setOutfit('#1D9E75','#A8E063',this)"><div class="outfit-swatch" style="background:linear-gradient(135deg,#1D9E75,#A8E063);"></div><div><div class="outfit-name">Forest</div><div class="outfit-sub">Fresh</div></div></div>
+        <div class="outfit-card" onclick="setOutfit('#FF1744','#FFD740',this)"><div class="outfit-swatch" style="background:linear-gradient(135deg,#FF1744,#FFD740);"></div><div><div class="outfit-name">Fire + Ice</div><div class="outfit-sub">Bold</div></div></div>
+        <div class="outfit-card" onclick="setOutfit('#C8973A','#FFF9C4',this)"><div class="outfit-swatch" style="background:linear-gradient(135deg,#C8973A,#FFF9C4);"></div><div><div class="outfit-name">Gold Rush</div><div class="outfit-sub">Legendary</div></div></div>
+      </div>
+      <div class="av-lbl">Accessory</div>
+      <div class="chip-row" id="chip-acc">
+        <div class="chip sel" onclick="setAcc('butterfly',this)">🦋 Butterfly</div>
+        <div class="chip" onclick="setAcc('crown',this)">👑 Crown</div>
+        <div class="chip" onclick="setAcc('headphones',this)">🎧 Beats</div>
+        <div class="chip" onclick="setAcc('star',this)">⭐ Star</div>
+        <div class="chip" onclick="setAcc('none',this)">✨ Clean</div>
+      </div>
+    </div>
+    <div class="av-sec" id="asec-badges">
+      <div class="zero-note">🦋<br><br>You start at zero. Every badge is earned through sessions and breakthroughs. Your first one is waiting for you.</div>
+      <div class="badge-grid">
+        <div class="badge-item"><span class="badge-emoji">🦋</span><div class="badge-name">First Wing</div></div>
+        <div class="badge-item"><span class="badge-emoji">⚡</span><div class="badge-name">Spark</div></div>
+        <div class="badge-item"><span class="badge-emoji">🏀</span><div class="badge-name">Baller</div></div>
+        <div class="badge-item"><span class="badge-emoji">🧠</span><div class="badge-name">Deep Think</div></div>
+        <div class="badge-item"><span class="badge-emoji">🔥</span><div class="badge-name">On Fire</div></div>
+        <div class="badge-item"><span class="badge-emoji">🚀</span><div class="badge-name">Breakthrough</div></div>
+        <div class="badge-item"><span class="badge-emoji">💎</span><div class="badge-name">Diamond</div></div>
+        <div class="badge-item"><span class="badge-emoji">🏆</span><div class="badge-name">Champion</div></div>
+      </div>
+    </div>
+    <button class="btn-save" onclick="switchTo('session')">Save Avatar — Go to Session</button>
   </div>
 </div>
+
+<!-- SESSION SCREEN -->
 <div class="screen" id="screen-session">
-  <div class="sess-layout">
-    <div class="sess-main">
-      <div id="view-checkin">
-        <p class="section-eyebrow">Today's Session</p>
-        <h1 class="section-title">How is Marcus today?</h1>
-        <p class="section-sub">Complete the check-in. The AI reads this and builds a personalized lesson plan.</p>
-        <div class="ci-header">
-          <div class="ci-avatar">M</div>
-          <div><div class="ci-name">BB-4729 — Marcus</div><div class="ci-meta">Age 11 · 6th Grade · Session #14</div></div>
-          <div class="ci-tag">⚕️ UCSF Benioff · Day 18</div>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
-          <div class="ci-card"><div class="ci-lbl">⚡ Energy Level</div><div class="scale-row" id="e-scale"><button class="sc-btn" onclick="setScale('e',1,'s-red',this)">1</button><button class="sc-btn" onclick="setScale('e',2,'s-red',this)">2</button><button class="sc-btn s-amb" onclick="setScale('e',3,'s-amb',this)">3</button><button class="sc-btn" onclick="setScale('e',4,'s-grn',this)">4</button><button class="sc-btn" onclick="setScale('e',5,'s-grn',this)">5</button></div></div>
-          <div class="ci-card"><div class="ci-lbl">🩹 Pain Level</div><div class="scale-row" id="p-scale"><button class="sc-btn" onclick="setScale('p',1,'s-grn',this)">1</button><button class="sc-btn s-grn" onclick="setScale('p',2,'s-grn',this)">2</button><button class="sc-btn" onclick="setScale('p',3,'s-amb',this)">3</button><button class="sc-btn" onclick="setScale('p',4,'s-red',this)">4</button><button class="sc-btn" onclick="setScale('p',5,'s-red',this)">5</button></div></div>
-        </div>
-        <div class="ci-card" style="margin-bottom:10px;"><div class="ci-lbl">🧠 Mindset Right Now</div><div class="mood-row"><button class="mood-btn" onclick="selMood(this)">😤 I can figure it out</button><button class="mood-btn sel" onclick="selMood(this)">😟 Not sure today</button><button class="mood-btn" onclick="selMood(this)">😴 Not feeling it</button></div></div>
-        <div class="ci-card" style="margin-bottom:10px;"><div class="ci-lbl">💬 Mood</div><div class="mood-row"><button class="mood-btn sel" onclick="selMood(this)">😟 Anxious</button><button class="mood-btn" onclick="selMood(this)">😐 Okay</button><button class="mood-btn" onclick="selMood(this)">😊 Good</button><button class="mood-btn" onclick="selMood(this)">🤩 Excited</button><button class="mood-btn" onclick="selMood(this)">😴 Tired</button></div></div>
-        <div class="signal-box sig-caution" id="sig-box"><span style="font-size:18px;flex-shrink:0;">⚠️</span><div><div style="font-size:13px;font-weight:700;color:#E67E22;margin-bottom:2px;">Calibrated Session</div><div style="color:#4A3F30;">Moderate energy, some anxiety. Lead with connection before content.</div></div></div>
-        <button class="btn-primary" style="width:100%;margin-top:14px;" onclick="generatePlan()">Generate Today's Lesson Plan →</button>
+  <div class="sess-main">
+    <div id="vw-checkin">
+      <p class="eyebrow">Today's Session</p>
+      <h1 class="s-title">How is Marcus today?</h1>
+      <p class="s-sub">Complete the check-in. The AI builds a personalized lesson plan from this data before the session begins.</p>
+      <div class="ci-top">
+        <div class="ci-av">M</div>
+        <div><div class="ci-name">BB-4729 — Marcus</div><div class="ci-meta">Age 11 · 6th Grade · Session 14</div></div>
+        <div class="ci-tag">UCSF Benioff · Day 18</div>
       </div>
-      <div id="view-plan" style="display:none;">
-        <p class="section-eyebrow">AI-Generated · Session #14</p>
-        <h1 class="section-title" id="plan-headline">From Pieces to Wholes</h1>
-        <div class="signal-box sig-caution" id="plan-signal" style="margin-bottom:14px;"><span style="font-size:18px;flex-shrink:0;">⚖️</span><div><div style="font-size:13px;font-weight:700;color:#E67E22;margin-bottom:2px;">Calibrated Session</div><div id="plan-rationale" style="color:#4A3F30;font-size:13px;">Starting with a confidence anchor. Connection before content.</div></div></div>
-        <div id="plan-sections"></div>
-        <div style="background:#E1F5EE;border:1px solid #A8D5C5;border-radius:10px;padding:11px 14px;margin-top:4px;"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#1D9E75;margin-bottom:3px;">📅 Next Session</div><div id="plan-next" style="font-size:13px;color:#4A3F30;">Mixed numbers. Same pizza model. Anchor with 7×8 win.</div></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:9px;">
+        <div class="card"><div class="c-lbl">Energy Level</div><div class="scale-row" id="escale"><button class="sc" onclick="setsc('e',1,'r',this)">1</button><button class="sc" onclick="setsc('e',2,'r',this)">2</button><button class="sc a" onclick="setsc('e',3,'a',this)">3</button><button class="sc" onclick="setsc('e',4,'g',this)">4</button><button class="sc" onclick="setsc('e',5,'g',this)">5</button></div></div>
+        <div class="card"><div class="c-lbl">Pain Level</div><div class="scale-row" id="pscale"><button class="sc" onclick="setsc('p',1,'g',this)">1</button><button class="sc g" onclick="setsc('p',2,'g',this)">2</button><button class="sc" onclick="setsc('p',3,'a',this)">3</button><button class="sc" onclick="setsc('p',4,'r',this)">4</button><button class="sc" onclick="setsc('p',5,'r',this)">5</button></div></div>
       </div>
-      <div id="view-summary" style="display:none;">
-        <div class="sum-hero"><div class="sum-emoji">⭐</div><div class="sum-name">Marcus — Session #14</div><div class="sum-date">UCSF Benioff · Today</div><div class="sum-stats"><div><div class="stat-v">42</div><div class="stat-l">Minutes</div></div><div><div class="stat-v">1</div><div class="stat-l">Breakthrough</div></div><div><div class="stat-v">14</div><div class="stat-l">Sessions</div></div><div><div class="stat-v">↗</div><div class="stat-l">Trend</div></div></div></div>
-        <div class="sum-grid">
-          <div class="sum-card"><div class="scard-lbl">🎯 Covered</div><div class="scard-body">Fractions as division. Pizza model. Word vs numerical — same answer.</div></div>
-          <div class="sum-card"><div class="scard-lbl">⚡ Breakthrough</div><div class="scard-body">"Oh so it's the same thing" — unprompted. Pattern recognition.</div></div>
-          <div class="sum-card"><div class="scard-lbl">💛 Emotional</div><div class="scard-body">Started anxious. Warmed up after 7×8 win. Volunteering answers by end.</div></div>
-          <div class="sum-card"><div class="scard-lbl">📅 Next Time</div><div class="scard-body">Mixed numbers. Same pizza model. Breakthrough window if vitals good.</div></div>
-        </div>
-        <div class="parent-msg"><div class="pmsg-lbl">📱 Parent Update — Ready to Send</div><div class="pmsg-body">"Hi Mrs. Thompson — Marcus had a great session today. He connected division and fractions in a real way. Started anxious but ended up volunteering answers with confidence. Something to celebrate tonight. — Ms. Rivera / Brown Bag"</div></div>
-        <button class="btn-gold" style="width:100%;margin-top:14px;" onclick="resetSession()">✓ New Session</button>
-      </div>
+      <div class="card" style="margin-bottom:9px;"><div class="c-lbl">Mindset Right Now</div><div class="mood-row"><button class="mood" onclick="tmood(this)">I can figure it out</button><button class="mood sel" onclick="tmood(this)">Not sure today</button><button class="mood" onclick="tmood(this)">Just not feeling it</button></div></div>
+      <div class="card" style="margin-bottom:9px;"><div class="c-lbl">Mood</div><div class="mood-row"><button class="mood sel" onclick="tmood(this)">Anxious</button><button class="mood" onclick="tmood(this)">Okay</button><button class="mood" onclick="tmood(this)">Good</button><button class="mood" onclick="tmood(this)">Excited</button><button class="mood" onclick="tmood(this)">Tired</button></div></div>
+      <div class="sig caution" id="sigbox"><div class="sig-icon">⚠️</div><div><div class="sig-title">Calibrated Session</div><div class="sig-body">Moderate energy, some anxiety. Lead with connection before content.</div></div></div>
+      <button class="btn-p" onclick="genPlan()">Generate Today's Lesson Plan →</button>
     </div>
-    <div class="sess-right">
-      <div id="rp-checkin">
-        <div class="sess-right-title">Session Signal</div>
-        <div class="sess-right-sub">Override if what you see differs from the check-in.</div>
-        <div style="background:#1B2A4A;border-radius:10px;padding:12px;margin-bottom:12px;"><div style="font-size:10px;color:#C8973A;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;">Check-in says</div><div style="font-size:13px;color:rgba(180,200,230,.7);line-height:1.6;">Energy 3/5 · Pain 2/5 · Anxious<br>Mindset: not sure today<br>Day 18, nervous about falling behind</div></div>
-        <div style="background:#FDF6E8;border:1px solid #F5E6CC;border-radius:10px;padding:12px;"><div style="font-size:10px;color:#C8973A;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;">Tutor override</div><div style="font-size:12px;color:#4A3F30;margin-bottom:8px;">Does this match what you see in the room?</div><div style="display:flex;gap:7px;"><button style="flex:1;background:#1D9E75;border:none;border-radius:7px;padding:8px;font-size:11px;font-weight:700;color:#fff;cursor:pointer;" onclick="confirmSignal()">✓ Confirm</button><button style="flex:1;background:transparent;border:1.5px solid #E0D4C0;border-radius:7px;padding:8px;font-size:11px;font-weight:700;color:#4A3F30;cursor:pointer;">Adjust</button></div><div style="font-size:11px;color:#9A8C78;margin-top:8px;font-style:italic;">Your override trains the AI — every correction makes the next session more accurate.</div></div>
-      </div>
-      <div id="rp-plan" style="display:none;">
-        <div class="sess-right-title">Socratic Prompts</div>
-        <div class="sess-right-sub">Tap any to mark as used.</div>
-        <div class="prompt-chip" onclick="usePrompt(this)">"Walk me through what you were thinking step by step."</div>
-        <div class="prompt-chip" onclick="usePrompt(this)">"You got it. Now explain it like I've never seen a fraction."</div>
-        <div class="prompt-chip" onclick="usePrompt(this)">"What would happen if you just tried something and it was wrong?"</div>
-        <div class="prompt-chip" onclick="usePrompt(this)">"If you and 3 friends split one pizza — what would each person get?"</div>
-        <div style="margin-top:14px;"><div class="sess-right-title">Progress — 14 Sessions</div><div style="background:#1B2A4A;border-radius:10px;padding:14px;margin-top:8px;"><div style="font-size:11px;color:#C8973A;font-weight:700;margin-bottom:4px;">Marcus</div><div style="font-size:10px;color:rgba(180,200,230,.5);margin-bottom:10px;">Energy · Breakthroughs · Engagement</div><canvas id="miniChart"></canvas></div></div>
-        <button class="btn-primary" style="width:100%;" onclick="showSummary()">Wrap Up → Summary</button>
-      </div>
+    <div id="vw-plan" style="display:none;">
+      <p class="eyebrow">AI-Generated · Session 14</p>
+      <h1 class="s-title" id="plan-hl">From Pieces to Wholes</h1>
+      <div class="sig caution" id="plan-sig" style="margin-bottom:13px;"><div class="sig-icon">⚖️</div><div><div class="sig-title">Calibrated Session</div><div id="plan-rat" class="sig-body">Starting with confidence. Connection before content.</div></div></div>
+      <div id="plan-secs"></div>
+      <div style="background:#E1F5EE;border:1px solid #A8D5C5;border-radius:9px;padding:10px 13px;margin-top:4px;"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#1D9E75;margin-bottom:3px;">Next Session</div><div id="plan-nxt" style="font-size:13px;color:#4A3F30;">Mixed numbers. Same pizza model.</div></div>
+    </div>
+    <div id="vw-summary" style="display:none;">
+      <div class="sum-hero"><div style="font-size:34px;margin-bottom:7px;">⭐</div><div style="font-size:17px;font-weight:800;color:#fff;">Marcus — Session 14</div><div style="font-size:11px;color:rgba(180,200,230,.6);margin-top:3px;">UCSF Benioff · Today</div><div class="sum-stats"><div><div class="sv">42</div><div class="sl">Minutes</div></div><div><div class="sv">1</div><div class="sl">Breakthrough</div></div><div><div class="sv">14</div><div class="sl">Sessions</div></div><div><div class="sv">↗</div><div class="sl">Trend</div></div></div></div>
+      <div class="sum-grid"><div class="sc-card"><div class="sc-lbl">Covered</div><div class="sc-body">Fractions as division. Pizza model. Word vs numerical — same answer.</div></div><div class="sc-card"><div class="sc-lbl">Breakthrough</div><div class="sc-body">"Oh so it's the same thing" — unprompted. Pattern recognition.</div></div><div class="sc-card"><div class="sc-lbl">Emotional</div><div class="sc-body">Started anxious. Warmed up. Volunteering answers by end.</div></div><div class="sc-card"><div class="sc-lbl">Next Time</div><div class="sc-body">Mixed numbers. Pizza model. Breakthrough window if vitals good.</div></div></div>
+      <div class="pmsg"><div class="pm-lbl">Parent Update — Ready to Send</div><div class="pm-body">"Hi Mrs. Thompson — Marcus had a great session today. He connected division and fractions in a real way. Started anxious but ended up volunteering answers with real confidence. Something to celebrate tonight. — Ms. Rivera / Brown Bag"</div></div>
+      <button class="btn-gold" onclick="resetSess()">New Session</button>
+    </div>
+  </div>
+  <div class="sess-panel">
+    <div id="sp-ci">
+      <div class="sp-title">Session Signal</div>
+      <div class="sp-sub">Override if what you see in the room differs from the check-in.</div>
+      <div style="background:#1B2A4A;border-radius:9px;padding:11px;margin-bottom:11px;"><div style="font-size:10px;color:#C8973A;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px;">Check-in says</div><div style="font-size:13px;color:rgba(180,200,230,.7);line-height:1.6;">Energy 3/5 · Pain 2/5 · Anxious<br>Mindset: not sure today<br>Day 18 — nervous about falling behind</div></div>
+      <div style="background:#FDF6E8;border:1px solid #F5E6CC;border-radius:9px;padding:11px;"><div style="font-size:10px;color:#C8973A;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;">Tutor override</div><div style="font-size:12px;color:#4A3F30;margin-bottom:8px;">Match what you see in the room?</div><div style="display:flex;gap:7px;"><button style="flex:1;background:#1D9E75;border:none;border-radius:7px;padding:8px;font-size:11px;font-weight:700;color:#fff;cursor:pointer;" onclick="confirmSig()">Confirm</button><button style="flex:1;background:transparent;border:1.5px solid #E0D4C0;border-radius:7px;padding:8px;font-size:11px;font-weight:700;color:#4A3F30;cursor:pointer;">Adjust</button></div><div style="font-size:11px;color:#9A8C78;margin-top:7px;font-style:italic;">Your override trains the AI. Every correction improves the next session.</div></div>
+    </div>
+    <div id="sp-plan" style="display:none;">
+      <div class="sp-title">Socratic Prompts</div>
+      <div class="sp-sub">Tap to mark as used.</div>
+      <div class="pchip" onclick="useChip(this)">"Walk me through what you were thinking step by step."</div>
+      <div class="pchip" onclick="useChip(this)">"Explain it to me like I've never seen a fraction."</div>
+      <div class="pchip" onclick="useChip(this)">"What if you just tried something and it was wrong?"</div>
+      <div class="pchip" onclick="useChip(this)">"If you and 3 friends split one pizza — what does each person get?"</div>
+      <div style="margin-top:13px;"><div class="sp-title">Progress — 14 Sessions</div><div style="background:#1B2A4A;border-radius:9px;padding:13px;margin-top:7px;"><div style="font-size:11px;color:#C8973A;font-weight:700;margin-bottom:3px;">Marcus</div><div style="font-size:10px;color:rgba(180,200,230,.5);margin-bottom:9px;">Energy · Breakthroughs · Engagement</div><canvas id="chart"></canvas></div></div>
+      <button class="btn-p" onclick="showSum()">Wrap Up — Summary</button>
     </div>
   </div>
 </div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <script>
-function switchScreen(s){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.nav-tab').forEach(x=>x.classList.remove('active'));document.getElementById('screen-'+s).classList.add('active');const tabs=document.querySelectorAll('.nav-tab');if(s==='avatar')tabs[0].classList.add('active');else{tabs[1].classList.add('active');setTimeout(drawMiniChart,200);}}
-let rotY=0,rotX=0,dragging=false,prevX=0,prevY=0,autoRot=true;
-const wrap=document.getElementById('avBodyWrap');
-const scene=document.getElementById('avScene');
-function applyRot(){wrap.style.transform=`rotateY(${rotY}deg) rotateX(${rotX}deg)`;}
-scene.addEventListener('mousedown',e=>{dragging=true;prevX=e.clientX;prevY=e.clientY;autoRot=false;});
-window.addEventListener('mousemove',e=>{if(!dragging)return;rotY+=(e.clientX-prevX)*0.5;rotX-=(e.clientY-prevY)*0.3;rotX=Math.max(-25,Math.min(25,rotX));prevX=e.clientX;prevY=e.clientY;applyRot();});
-window.addEventListener('mouseup',()=>dragging=false);
-scene.addEventListener('touchstart',e=>{dragging=true;prevX=e.touches[0].clientX;prevY=e.touches[0].clientY;autoRot=false;e.preventDefault();},{passive:false});
-scene.addEventListener('touchmove',e=>{if(!dragging)return;rotY+=(e.touches[0].clientX-prevX)*0.5;rotX-=(e.touches[0].clientY-prevY)*0.3;rotX=Math.max(-25,Math.min(25,rotX));prevX=e.touches[0].clientX;prevY=e.touches[0].clientY;applyRot();e.preventDefault();},{passive:false});
-scene.addEventListener('touchend',()=>dragging=false);
-setInterval(()=>{if(autoRot){rotY+=0.6;applyRot();}},16);
-const st={skin:'#FDDBB4',hair:'afro',hColor:'#1A0A00',c1:'#1B2A4A',c2:'#C8973A'};
-function setSkin(c,el){st.skin=c;document.getElementById('avHead').style.background=c;selSwatch('#sw-skin',el);}
-function setHairStyle(s,el){st.hair=s;renderHair();selChip('#hair-row',el);}
-function setHairColor(c,el){st.hColor=c;renderHair();selSwatch('#sw-hair',el);}
-function setOutfit(c1,c2,el){st.c1=c1;st.c2=c2;['avBody','armL','armR','legL','legR'].forEach(id=>document.getElementById(id).style.background=c1);document.getElementById('avStripe').style.background=c2;selOutfit(el);}
-function setAcc(a,el){document.getElementById('avAcc').textContent=a;selChip('#acc-row',el);}
-function setEye(s,el){const pupils=document.querySelectorAll('.av-pupil');if(s==='star')pupils.forEach(p=>p.style.background='#FFD740');else if(s==='heart')pupils.forEach(p=>p.style.background='#FF1744');else if(s==='sleepy')pupils.forEach(p=>{p.style.height='6px';p.style.top='8px';});else if(s==='cool')pupils.forEach(p=>{p.style.background='#111';p.style.height='14px';p.style.borderRadius='4px';p.style.top='4px';});else pupils.forEach(p=>{p.style.background='#111';p.style.height='14px';p.style.borderRadius='50%';p.style.top='4px';});selChip('#eye-row',el);}
-function renderHair(){const h=document.getElementById('avHair');const styles={afro:`width:128px;height:100px;border-radius:50%;background:${st.hColor};left:36px;top:4px;`,locs:`width:108px;height:70px;border-radius:50% 50% 0 0;background:${st.hColor};left:46px;top:8px;box-shadow:0 40px 0 ${st.hColor},-20px 50px 0 ${st.hColor},20px 50px 0 ${st.hColor};`,braids:`width:108px;height:70px;border-radius:50% 50% 0 0;background:${st.hColor};left:46px;top:8px;box-shadow:0 60px 0 8px ${st.hColor};`,fade:`width:108px;height:50px;border-radius:50% 50% 0 0;background:${st.hColor};left:46px;top:12px;`,curly:`width:130px;height:90px;border-radius:50%;background:${st.hColor};left:35px;top:2px;box-shadow:8px -10px 0 6px ${st.hColor},-8px -8px 0 4px ${st.hColor};`,bun:`width:100px;height:55px;border-radius:50% 50% 0 0;background:${st.hColor};left:50px;top:10px;box-shadow:0 -30px 0 12px ${st.hColor};`,bald:`width:0;height:0;`};h.style.cssText=styles[st.hair]||styles.afro;}
+// Screen switch
+function switchTo(s) {
+  document.querySelectorAll('.screen').forEach(function(x){ x.classList.remove('active'); });
+  document.querySelectorAll('.nav-tab').forEach(function(x){ x.classList.remove('active'); });
+  document.getElementById('screen-'+s).classList.add('active');
+  document.getElementById('tab-'+s).classList.add('active');
+  if(s === 'session') { setTimeout(initChart, 200); }
+}
+
+// Avatar rotation
+var rotY = 0, rotX = 0, dragging = false, prevX = 0, prevY = 0, autoRot = true;
+var wrap = document.getElementById('avWrap');
+var sc = document.getElementById('avScene');
+
+function applyRot() {
+  wrap.style.transform = 'rotateY('+rotY+'deg) rotateX('+rotX+'deg)';
+}
+sc.addEventListener('mousedown', function(e){ dragging=true; prevX=e.clientX; prevY=e.clientY; autoRot=false; });
+window.addEventListener('mousemove', function(e){
+  if(!dragging) return;
+  rotY += (e.clientX-prevX)*0.5;
+  rotX -= (e.clientY-prevY)*0.3;
+  rotX = Math.max(-25, Math.min(25, rotX));
+  prevX=e.clientX; prevY=e.clientY; applyRot();
+});
+window.addEventListener('mouseup', function(){ dragging=false; });
+sc.addEventListener('touchstart', function(e){ dragging=true; prevX=e.touches[0].clientX; prevY=e.touches[0].clientY; autoRot=false; e.preventDefault(); }, {passive:false});
+sc.addEventListener('touchmove', function(e){
+  if(!dragging) return;
+  rotY += (e.touches[0].clientX-prevX)*0.5;
+  rotX -= (e.touches[0].clientY-prevY)*0.3;
+  rotX = Math.max(-25, Math.min(25, rotX));
+  prevX=e.touches[0].clientX; prevY=e.touches[0].clientY; applyRot(); e.preventDefault();
+}, {passive:false});
+sc.addEventListener('touchend', function(){ dragging=false; });
+setInterval(function(){ if(autoRot){ rotY+=0.6; applyRot(); } }, 16);
+
+// Avatar customization
+var curSkin = '#FDDBB4', curHair = 'afro', curHairColor = '#1A0A00', curC1 = '#1B2A4A', curC2 = '#C8973A';
+
+function setSkin(c, el) {
+  curSkin = c;
+  document.getElementById('avhead').style.background = c;
+  document.getElementById('lhand').style.background = c;
+  document.getElementById('rhand').style.background = c;
+  selSw('#sw-skin', el);
+}
+function setHairStyle(s, el) { curHair=s; renderHair(); selChip('#chip-hair', el); }
+function setHairColor(c, el) { curHairColor=c; renderHair(); selSw('#sw-hair', el); }
+function setOutfit(c1, c2, el) {
+  curC1=c1; curC2=c2;
+  ['avbody','larm','rarm','lleg','rleg'].forEach(function(id){ document.getElementById(id).style.background=c1; });
+  document.getElementById('avbelly').style.background = c2;
+  document.querySelectorAll('#outfit-grid .outfit-card').forEach(function(x){ x.classList.remove('sel'); });
+  el.classList.add('sel');
+}
+function setAcc(type, el) {
+  var icons = {butterfly:'🦋', crown:'👑', headphones:'🎧', star:'⭐', none:''};
+  document.getElementById('avacc').textContent = icons[type] || '';
+  selChip('#chip-acc', el);
+}
+function setEyes(type, el) {
+  var pupils = document.querySelectorAll('#avWrap .av-lpupil, #avWrap .av-rpupil');
+  pupils.forEach(function(p){
+    p.style.background = type==='star'?'#FFD740':type==='heart'?'#FF1744':'#111';
+    p.style.height = type==='sleepy'?'6px':'14px';
+    p.style.top = type==='sleepy'?'9px':'6px';
+    p.style.borderRadius = type==='cool'?'3px':'50%';
+  });
+  selChip(el.parentElement, el);
+}
+function renderHair() {
+  var h = document.getElementById('avhair');
+  var styles = {
+    afro: 'width:156px;height:110px;border-radius:50%;background:'+curHairColor+';left:32px;top:0px;',
+    locs: 'width:140px;height:80px;border-radius:50% 50% 0 0;background:'+curHairColor+';left:40px;top:4px;box-shadow:0 50px 0 '+curHairColor+',-24px 60px 0 '+curHairColor+',24px 60px 0 '+curHairColor+';',
+    braids: 'width:140px;height:80px;border-radius:50% 50% 0 0;background:'+curHairColor+';left:40px;top:4px;box-shadow:0 70px 0 8px '+curHairColor+';',
+    fade: 'width:140px;height:55px;border-radius:50% 50% 0 0;background:'+curHairColor+';left:40px;top:10px;',
+    curly: 'width:160px;height:105px;border-radius:50%;background:'+curHairColor+';left:30px;top:-4px;box-shadow:10px -10px 0 6px '+curHairColor+',-10px -8px 0 5px '+curHairColor+';',
+    bun: 'width:130px;height:65px;border-radius:50% 50% 0 0;background:'+curHairColor+';left:45px;top:6px;box-shadow:0 -36px 0 14px '+curHairColor+';',
+    bald: 'width:0;height:0;'
+  };
+  h.style.cssText = styles[curHair] || styles.afro;
+}
 renderHair();
-function selSwatch(p,el){document.querySelectorAll(p+' .sw').forEach(s=>s.classList.remove('sel'));el.classList.add('sel');}
-function selChip(p,el){document.querySelectorAll(p+' .chip').forEach(s=>s.classList.remove('sel'));el.classList.add('sel');}
-function selOutfit(el){document.querySelectorAll('#outfit-grid .outfit-card').forEach(s=>s.classList.remove('sel'));el.classList.add('sel');}
-function avTab(t){document.querySelectorAll('.av-tabBtn').forEach(b=>b.classList.remove('active'));document.querySelectorAll('.av-section').forEach(s=>s.classList.remove('active'));const tabs=['skin','hair','outfit','badges'];document.querySelectorAll('.av-tabBtn')[tabs.indexOf(t)].classList.add('active');document.getElementById('sec-'+t).classList.add('active');}
-function randomize(){const skins=['#FDDBB4','#F0C27F','#C68642','#8D5524','#4A3728','#8EC5FC','#A8E063','#E040FB'];const hStyles=['afro','locs','braids','fade','curly','bun','bald'];const hColors=['#1A0A00','#4A2800','#C68642','#E0E0E0','#FF1744','#E040FB','#00BCD4','#FFD740'];const outfits=[['#1B2A4A','#C8973A'],['#D85A30','#FF8A65'],['#7F77DD','#E040FB'],['#1D9E75','#A8E063'],['#FF1744','#FFD740'],['#C8973A','#FFF9C4']];const accs=['🦋','👑','🎧','⭐',''];st.skin=skins[Math.floor(Math.random()*skins.length)];document.getElementById('avHead').style.background=st.skin;st.hair=hStyles[Math.floor(Math.random()*hStyles.length)];st.hColor=hColors[Math.floor(Math.random()*hColors.length)];renderHair();const[c1,c2]=outfits[Math.floor(Math.random()*outfits.length)];st.c1=c1;st.c2=c2;['avBody','armL','armR','legL','legR'].forEach(id=>document.getElementById(id).style.background=c1);document.getElementById('avStripe').style.background=c2;document.getElementById('avAcc').textContent=accs[Math.floor(Math.random()*accs.length)];autoRot=true;}
-const scales={e:{v:3,c:'s-amb'},p:{v:2,c:'s-grn'}};
-function setScale(type,v,cls,el){scales[type]={v,c:cls};document.querySelectorAll('#'+type+'-scale .sc-btn').forEach(b=>{b.className='sc-btn';});el.classList.add(cls);updateSignal();}
-function selMood(el){el.classList.toggle('sel');}
-function updateSignal(){const e=scales.e.v,p=scales.p.v;const box=document.getElementById('sig-box');if(e>=4&&p<=2){box.className='signal-box sig-break';box.innerHTML='<span style="font-size:18px;flex-shrink:0;">🚀</span><div><div style="font-size:13px;font-weight:700;color:#1A6B3A;margin-bottom:2px;">Breakthrough Window</div><div style="color:#4A3F30;">High energy, low pain. Push toward the next concept.</div></div>';}else if(e<=2||p>=4){box.className='signal-box sig-rest';box.innerHTML='<span style="font-size:18px;flex-shrink:0;">💛</span><div><div style="font-size:13px;font-weight:700;color:#C0392B;margin-bottom:2px;">Light Session Today</div><div style="color:#4A3F30;">Connection before content. Reinforce, don\'t introduce.</div></div>';}else{box.className='signal-box sig-caution';box.innerHTML='<span style="font-size:18px;flex-shrink:0;">⚠️</span><div><div style="font-size:13px;font-weight:700;color:#E67E22;margin-bottom:2px;">Calibrated Session</div><div style="color:#4A3F30;">Lead with connection. Warm-up before any new content.</div></div>';}}
-const secSteps={};
-async function generatePlan(){document.getElementById('view-checkin').style.display='none';document.getElementById('view-plan').style.display='block';document.getElementById('rp-checkin').style.display='none';document.getElementById('rp-plan').style.display='block';document.getElementById('plan-sections').innerHTML=`<div class="gen-box"><div class="gen-spin"></div><div class="gen-title">Building Marcus's lesson plan...</div><div class="gen-sub">Reading check-in · Analyzing mindset · Generating session structure</div></div>`;const fallback=getFallback();try{const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1200,messages:[{role:'user',content:`Brown Bag AI. Marcus Thompson, Age 11, 6th Grade, UCSF Day 18, Session 14. Fractions. Energy ${scales.e.v}/5, Pain ${scales.p.v}/5. Return ONLY valid JSON: {"session_headline":"title","session_rationale":"2 sentences","sections":[{"id":"warmup","label":"Warm-Up","title":"title","duration":"8 min","steps":[{"title":"step","body":"what","note":"tip"}],"done_msg":"msg"},{"id":"core","label":"Core Concept","title":"title","duration":"20 min","steps":[{"title":"step","body":"what","note":"if struggle"}],"done_msg":"msg"},{"id":"socratic","label":"Socratic Prompts","title":"Questions","duration":"Throughout","steps":[{"title":"When wrong","body":"prompt","note":"why"},{"title":"When right","body":"prompt","note":"deepen"},{"title":"Shut down","body":"prompt","note":"reopen"},{"title":"Connect","body":"prompt","note":"meaning"}],"done_msg":"msg"},{"id":"closing","label":"Closing","title":"title","duration":"8 min","steps":[{"title":"step","body":"how to close","note":"affirmation"}],"done_msg":"msg"}],"next_session_seed":"one sentence"}`}]}));const d=await res.json();const raw=d.content.find(b=>b.type==='text')?.text||'';renderPlan(JSON.parse(raw.replace(/```json|```/g,'').trim()));}catch{renderPlan(fallback);}drawMiniChart();}
-function getFallback(){return{session_headline:"From Pieces to Wholes — Fractions as Sharing",session_rationale:"Marcus is anxious with moderate energy. Starting with a confidence anchor before any new fraction concepts.",next_session_seed:"Mixed numbers using same pizza model.",sections:[{id:"warmup",label:"Warm-Up",title:"The Times Table Win",duration:"8 min",steps:[{title:"Open with the win",body:"Ask Marcus to recall 7×8 without counting. Wait. Let it land. 'That happened because you kept going.'",note:"Extend if still closed — don't rush."},{title:"Bridge to today",body:"Ask: 'What do you think fractions have to do with multiplication?' Don't answer. Plant the question.",note:"Curiosity, not performance."}],done_msg:"Warm-up complete ✓"},{id:"core",label:"Core Concept",title:"Fractions as Division — Pizza Model",duration:"20 min",steps:[{title:"Draw the pizza",body:"Let Marcus draw a circle and cut it into 4 slices. If you eat 1, what did you eat?",note:"Let him choose the words."},{title:"Two ways to write it",body:"Write 1÷4 and 1/4 side by side. Say nothing. Wait. Let him connect them.",note:"If stuck: '4 friends share 1 pizza — what does each get?'"},{title:"Test the pattern",body:"Try 2÷4 and 2/4. 'Same thing?' Let him confirm.",note:"If shutdown: 'What do you notice?' — not 'solve it.'"},{title:"Word vs numerical",body:"Write the word problem and equation. 'Are these the same question?'",note:"If correct: 'How did you know?' Make him say it."}],done_msg:"Core concept complete ✓"},{id:"socratic",label:"Socratic Prompts",title:"Questions Throughout",duration:"Throughout",steps:[{title:"When wrong",body:"'Walk me through what you were thinking step by step.'",note:"Wrong answers are information."},{title:"When right",body:"'Explain it like I've never seen a fraction.'",note:"Teaching deepens understanding."},{title:"Shut down",body:"'What if you just tried something and it was wrong?'",note:"Make struggle safe."},{title:"Connect",body:"'If you and 3 friends split one pizza — what does each person get?'",note:"Ground it in his world."}],done_msg:"Prompts reviewed ✓"},{id:"closing",label:"Closing",title:"The Connection Moment",duration:"8 min",steps:[{title:"Document the win",body:"'What makes more sense now than when we started?' Write his words where he can see.",note:"His insight documented = lasting."},{title:"The affirmation",body:"'You came in anxious today and figured something out anyway. That's your brain when you give it a chance.'",note:"Eye contact. Slow. Let it land."}],done_msg:"Session complete ✓"}]};}
-const tagColors={warmup:'#7F77DD',core:'#C8973A',socratic:'#1D9E75',closing:'#D85A30'};
-function renderPlan(plan){document.getElementById('plan-headline').textContent=plan.session_headline;document.getElementById('plan-rationale').textContent=plan.session_rationale;document.getElementById('plan-next').textContent=plan.next_session_seed;let html='';plan.sections.forEach((sec,si)=>{const tc=tagColors[sec.id]||'#C8973A';let stepsHtml=sec.steps.map((step,idx)=>`<div class="flow-step ${idx===0?'act':''}" id="fs-${sec.id}-${idx}"><div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;gap:0;"><div class="fdot">${idx===0?'→':idx+1}</div>${idx<sec.steps.length-1?'<div class="fline"></div>':''}</div><div style="flex:1;"><div class="ftitle">${step.title}</div><div class="fbody">${step.body}</div><div class="fnote">💡 ${step.note}</div><div class="fbtns"><button class="fbtn" onclick="advStep('${sec.id}',${idx})">${idx<sec.steps.length-1?'Next Step →':'Complete ✓'}</button>${idx>0?`<button class="fskip" onclick="advStep('${sec.id}',${idx})">Skip</button>`:''}</div></div></div>`).join('');html+=`<div class="plan-card"><div class="plan-hdr" id="phdr-${sec.id}" onclick="toggleSec('${sec.id}')"><div style="display:flex;align-items:center;gap:10px;"><div class="phdr-num">${si+1}</div><div><div class="phdr-label">${sec.label} · ${sec.duration}</div><div class="phdr-title">${sec.title}</div></div></div><span class="phdr-chev">⌄</span></div><div class="plan-body" id="pbody-${sec.id}"><div class="plan-body-inner"><div style="display:inline-block;background:${tc}22;color:${tc};font-size:10px;font-weight:700;padding:2px 9px;border-radius:20px;margin-bottom:10px;">${sec.id==='warmup'?'Connection First':sec.id==='core'?'Math Mindset':sec.id==='socratic'?'Struggle Literacy':'Send Off Strong'}</div>${stepsHtml}<div class="sec-done" id="sd-${sec.id}">✓ ${sec.done_msg}</div></div></div></div>`;secSteps[sec.id]=0;});document.getElementById('plan-sections').innerHTML=html;setTimeout(()=>toggleSec(plan.sections[0].id),300);}
-function toggleSec(id){document.querySelectorAll('.plan-hdr').forEach(h=>h.classList.remove('open'));document.querySelectorAll('.plan-body').forEach(b=>b.classList.remove('open'));const h=document.getElementById('phdr-'+id),b=document.getElementById('pbody-'+id);if(h&&b){h.classList.add('open');b.classList.add('open');}}
-function advStep(secId,idx){const steps=document.querySelectorAll(`#pbody-${secId} .flow-step`);steps[idx].classList.remove('act');steps[idx].classList.add('done');steps[idx].querySelector('.fdot').textContent='✓';const next=idx+1;if(next<steps.length){steps[next].classList.add('act');steps[next].scrollIntoView({behavior:'smooth',block:'nearest'});}else{const d=document.getElementById('sd-'+secId);if(d)d.classList.add('show');const h=document.getElementById('phdr-'+secId);if(h)h.classList.add('completed');}}
-function confirmSignal(){document.getElementById('rp-checkin').innerHTML='<div style="background:#EAF3DE;border:1px solid #A8D5B5;border-radius:10px;padding:12px;font-size:13px;color:#1A6B3A;font-weight:600;">✓ Signal confirmed. Lesson plan calibrated.</div>';}
-function showSummary(){document.getElementById('view-plan').style.display='none';document.getElementById('view-summary').style.display='block';}
-function resetSession(){document.getElementById('view-summary').style.display='none';document.getElementById('view-checkin').style.display='block';document.getElementById('view-plan').style.display='none';document.getElementById('rp-checkin').style.display='block';document.getElementById('rp-plan').style.display='none';}
-function usePrompt(el){el.style.opacity='.4';el.style.textDecoration='line-through';}
-let chartInst=null;
-function drawMiniChart(){const canvas=document.getElementById('miniChart');if(!canvas)return;if(chartInst){chartInst.destroy();chartInst=null;}const labels=['S1','S2','S3','S4','S5','S6','S7','S8','S9','S10','S11','S12','S13','S14'];const energy=[2,2,3,2,3,4,3,2,4,3,4,4,3,3];const breaks=[0,0,1,0,0,1,1,0,1,1,1,0,1,1];const engage=[2,3,3,3,4,4,3,3,4,4,4,4,4,4];chartInst=new Chart(canvas,{type:'line',data:{labels,datasets:[{label:'Energy',data:energy,borderColor:'#C8973A',tension:.4,borderWidth:1.5,pointRadius:2,pointBackgroundColor:'#C8973A',fill:false},{label:'Breakthroughs',data:breaks.map(v=>v*4.5),borderColor:'#7F77DD',tension:.3,borderWidth:1.5,pointRadius:breaks.map(v=>v?5:2),pointBackgroundColor:breaks.map(v=>v?'#7F77DD':'rgba(127,119,221,.3)'),fill:false},{label:'Engagement',data:engage,borderColor:'#1D9E75',tension:.4,borderWidth:1.5,pointRadius:2,pointBackgroundColor:'#1D9E75',fill:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'rgba(27,42,74,.95)',titleColor:'#C8973A',bodyColor:'#fff',padding:6,cornerRadius:6}},scales:{x:{grid:{color:'rgba(255,255,255,.06)'},ticks:{color:'rgba(180,200,230,.5)',font:{size:9}}},y:{min:0,max:5,grid:{color:'rgba(255,255,255,.06)'},ticks:{color:'rgba(180,200,230,.5)',font:{size:9},stepSize:1}}}}});}
+
+function selSw(parent, el) {
+  document.querySelectorAll(parent+' .sw').forEach(function(s){ s.classList.remove('sel'); });
+  el.classList.add('sel');
+}
+function selChip(parent, el) {
+  var container = typeof parent === 'string' ? document.querySelector(parent) : parent;
+  if(container) container.querySelectorAll('.chip').forEach(function(s){ s.classList.remove('sel'); });
+  el.classList.add('sel');
+}
+
+function avTab(t, btn) {
+  document.querySelectorAll('.av-tab-btn').forEach(function(b){ b.classList.remove('active'); });
+  document.querySelectorAll('.av-sec').forEach(function(s){ s.classList.remove('active'); });
+  btn.classList.add('active');
+  document.getElementById('asec-'+t).classList.add('active');
+}
+
+function randomize() {
+  var skins=['#FDDBB4','#F0C27F','#C68642','#8D5524','#4A3728','#8EC5FC','#A8E063','#E040FB'];
+  var hairs=['afro','locs','braids','fade','curly','bun','bald'];
+  var hcolors=['#1A0A00','#4A2800','#C68642','#E0E0E0','#FF1744','#E040FB','#00BCD4','#FFD740'];
+  var outfits=[['#1B2A4A','#C8973A'],['#D85A30','#FF8A65'],['#7F77DD','#E040FB'],['#1D9E75','#A8E063'],['#FF1744','#FFD740'],['#C8973A','#FFF9C4']];
+  var accs=['🦋','👑','🎧','⭐',''];
+  curSkin = skins[Math.floor(Math.random()*skins.length)];
+  document.getElementById('avhead').style.background = curSkin;
+  document.getElementById('lhand').style.background = curSkin;
+  document.getElementById('rhand').style.background = curSkin;
+  curHair = hairs[Math.floor(Math.random()*hairs.length)];
+  curHairColor = hcolors[Math.floor(Math.random()*hcolors.length)];
+  renderHair();
+  var o = outfits[Math.floor(Math.random()*outfits.length)];
+  curC1=o[0]; curC2=o[1];
+  ['avbody','larm','rarm','lleg','rleg'].forEach(function(id){ document.getElementById(id).style.background=curC1; });
+  document.getElementById('avbelly').style.background = curC2;
+  document.getElementById('avacc').textContent = accs[Math.floor(Math.random()*accs.length)];
+  autoRot = true;
+}
+
+// Check-in
+var scales = {e:{v:3,c:'a'}, p:{v:2,c:'g'}};
+function setsc(type, v, cls, el) {
+  scales[type] = {v:v, c:cls};
+  document.querySelectorAll('#'+type+'scale .sc').forEach(function(b){ b.className='sc'; });
+  el.classList.add(cls);
+  updateSig();
+}
+function tmood(el) { el.classList.toggle('sel'); }
+function updateSig() {
+  var e=scales.e.v, p=scales.p.v;
+  var box=document.getElementById('sigbox');
+  if(e>=4&&p<=2){
+    box.className='sig go';
+    box.innerHTML='<div class="sig-icon">🚀</div><div><div class="sig-title">Breakthrough Window</div><div class="sig-body">High energy, low pain. Push toward the next concept.</div></div>';
+  } else if(e<=2||p>=4){
+    box.className='sig slow';
+    box.innerHTML='<div class="sig-icon">💛</div><div><div class="sig-title">Light Session Today</div><div class="sig-body">Connection before content. Reinforce, do not introduce.</div></div>';
+  } else {
+    box.className='sig caution';
+    box.innerHTML='<div class="sig-icon">⚠️</div><div><div class="sig-title">Calibrated Session</div><div class="sig-body">Lead with connection. Warm-up before any new content.</div></div>';
+  }
+}
+
+// Generate plan
+async function genPlan() {
+  document.getElementById('vw-checkin').style.display='none';
+  document.getElementById('vw-plan').style.display='block';
+  document.getElementById('sp-ci').style.display='none';
+  document.getElementById('sp-plan').style.display='block';
+  document.getElementById('plan-secs').innerHTML='<div class="gen-box"><div class="gen-spin"></div><div class="gen-t">Building Marcus\'s lesson plan...</div><div class="gen-s">Reading check-in · Analyzing mindset · Generating session structure</div></div>';
+  var plan = getFallback();
+  try {
+    var res = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1200,messages:[{role:'user',content:'Brown Bag AI. Marcus Thompson Age 11 6th Grade UCSF Day 18 Session 14. Fractions. Energy '+scales.e.v+'/5 Pain '+scales.p.v+'/5. Return ONLY valid JSON: {"session_headline":"title","session_rationale":"2 sentences","sections":[{"id":"warmup","label":"Warm-Up","title":"title","duration":"8 min","steps":[{"title":"step","body":"what","note":"tip"}],"done_msg":"msg"},{"id":"core","label":"Core Concept","title":"title","duration":"20 min","steps":[{"title":"step","body":"what","note":"tip"}],"done_msg":"msg"},{"id":"socratic","label":"Socratic Prompts","title":"Questions","duration":"Throughout","steps":[{"title":"Wrong","body":"prompt","note":"why"},{"title":"Right","body":"prompt","note":"deepen"},{"title":"Shutdown","body":"prompt","note":"reopen"},{"title":"Connect","body":"prompt","note":"meaning"}],"done_msg":"msg"},{"id":"closing","label":"Closing","title":"title","duration":"8 min","steps":[{"title":"step","body":"how","note":"affirmation"}],"done_msg":"msg"}],"next_session_seed":"one sentence"}'}]})
+    });
+    var d = await res.json();
+    var raw = (d.content.find(function(b){return b.type==='text';}) || {}).text || '';
+    plan = JSON.parse(raw.replace(/```json|```/g,'').trim());
+  } catch(e) { /* use fallback */ }
+  renderPlan(plan);
+  setTimeout(initChart, 200);
+}
+
+function getFallback() {
+  return {
+    session_headline: "From Pieces to Wholes — Fractions as Sharing",
+    session_rationale: "Marcus is anxious with moderate energy. Starting with a confidence anchor before any new fraction concepts.",
+    next_session_seed: "Mixed numbers using same pizza model — Marcus is ready.",
+    sections: [
+      {id:"warmup",label:"Warm-Up",title:"The Times Table Win",duration:"8 min",done_msg:"Warm-up complete",steps:[
+        {title:"Open with the win",body:"Ask Marcus to recall 7x8 without counting. Wait. Let it land. Say: That happened because you kept going.",note:"Extend if still closed after 3 min."},
+        {title:"Bridge to today",body:"Ask: What do you think fractions have to do with multiplication? Do not answer. Plant the question.",note:"Curiosity not performance."}
+      ]},
+      {id:"core",label:"Core Concept",title:"Fractions as Division — Pizza Model",duration:"20 min",done_msg:"Core concept complete",steps:[
+        {title:"Draw the pizza",body:"Let Marcus draw a circle and cut it into 4 slices. If you eat 1, what did you eat? Let him choose the words.",note:"Do not correct — explore."},
+        {title:"Two ways to write it",body:"Write 1 divided by 4 and 1/4 side by side. Say nothing. Wait. Let him connect them.",note:"If stuck: 4 friends share 1 pizza — what does each person get?"},
+        {title:"Test the pattern",body:"Try 2 divided by 4 and 2/4. Same thing? Let him confirm.",note:"If shutdown: What do you notice? Not solve it."},
+        {title:"Word vs numerical",body:"Write the word problem and the equation. Are these the same question?",note:"If correct: How did you know? Make him say it."}
+      ]},
+      {id:"socratic",label:"Socratic Prompts",title:"Questions to Use Throughout",duration:"Throughout",done_msg:"Prompts reviewed",steps:[
+        {title:"When he gets it wrong",body:"Walk me through what you were thinking step by step.",note:"Wrong answers are information."},
+        {title:"When he gets it right",body:"Explain it to me like I have never seen a fraction.",note:"Teaching deepens understanding."},
+        {title:"When he shuts down",body:"What would happen if you just tried something and it was wrong?",note:"Make struggle feel safe."},
+        {title:"Connect to his life",body:"If you and 3 friends split one pizza — what would each person get?",note:"Ground it in his world."}
+      ]},
+      {id:"closing",label:"Closing",title:"The Connection Moment",duration:"8 min",done_msg:"Session complete",steps:[
+        {title:"Document the win",body:"What makes more sense now than when we started? Write his words where he can see them.",note:"His own insight documented makes it last."},
+        {title:"The affirmation",body:"You came in anxious today and figured something out anyway. That is not luck. That is your brain when you give it a chance.",note:"Eye contact. Slow. Let it land."}
+      ]}
+    ]
+  };
+}
+
+var tagColors = {warmup:'#7F77DD',core:'#C8973A',socratic:'#1D9E75',closing:'#D85A30'};
+var tagLabels = {warmup:'Connection First',core:'Math Mindset',socratic:'Struggle Literacy',closing:'Send Off Strong'};
+
+function renderPlan(plan) {
+  document.getElementById('plan-hl').textContent = plan.session_headline;
+  document.getElementById('plan-rat').textContent = plan.session_rationale;
+  document.getElementById('plan-nxt').textContent = plan.next_session_seed;
+  var html = '';
+  for(var si=0; si<plan.sections.length; si++) {
+    var sec = plan.sections[si];
+    var tc = tagColors[sec.id] || '#C8973A';
+    var tl = tagLabels[sec.id] || sec.label;
+    var stepsHtml = '';
+    for(var idx=0; idx<sec.steps.length; idx++) {
+      var step = sec.steps[idx];
+      var isFirst = idx === 0;
+      var isLast = idx === sec.steps.length - 1;
+      var skipBtn = idx > 0 ? '<button class="fskp" onclick="advStep(\''+sec.id+'\','+idx+')">Skip</button>' : '';
+      var nextLabel = isLast ? 'Complete' : 'Next Step';
+      var fline = !isLast ? '<div class="fline"></div>' : '';
+      var dotLabel = isFirst ? '→' : String(idx+1);
+      stepsHtml += '<div class="fs '+(isFirst?'act':'')+'" id="fs-'+sec.id+'-'+idx+'">';
+      stepsHtml += '<div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;">';
+      stepsHtml += '<div class="fdot">'+dotLabel+'</div>'+fline;
+      stepsHtml += '</div>';
+      stepsHtml += '<div style="flex:1;">';
+      stepsHtml += '<div class="ft">'+step.title+'</div>';
+      stepsHtml += '<div class="fb">'+step.body+'</div>';
+      stepsHtml += '<div class="fn">💡 '+step.note+'</div>';
+      stepsHtml += '<div class="fbtns">';
+      stepsHtml += '<button class="fbtn" onclick="advStep(\''+sec.id+'\','+idx+')">'+nextLabel+'</button>'+skipBtn;
+      stepsHtml += '</div></div></div>';
+    }
+    html += '<div class="plan-card">';
+    html += '<div class="plan-hdr" id="phdr-'+sec.id+'" onclick="toggleSec(\''+sec.id+'\')">';
+    html += '<div style="display:flex;align-items:center;gap:10px;">';
+    html += '<div class="ph-num">'+(si+1)+'</div>';
+    html += '<div><div class="ph-lbl">'+sec.label+' · '+sec.duration+'</div><div class="ph-title">'+sec.title+'</div></div>';
+    html += '</div><span class="ph-chev">⌄</span></div>';
+    html += '<div class="plan-body" id="pbody-'+sec.id+'">';
+    html += '<div class="plan-inner">';
+    html += '<div class="step-tag" style="background:'+tc+'22;color:'+tc+'">'+tl+'</div>';
+    html += stepsHtml;
+    html += '<div class="sec-ok" id="sok-'+sec.id+'">✓ '+sec.done_msg+'</div>';
+    html += '</div></div></div>';
+  }
+  document.getElementById('plan-secs').innerHTML = html;
+  setTimeout(function(){ toggleSec(plan.sections[0].id); }, 300);
+}
+
+function toggleSec(id) {
+  document.querySelectorAll('.plan-hdr').forEach(function(h){ h.classList.remove('open'); });
+  document.querySelectorAll('.plan-body').forEach(function(b){ b.classList.remove('open'); });
+  var h = document.getElementById('phdr-'+id);
+  var b = document.getElementById('pbody-'+id);
+  if(h && b){ h.classList.add('open'); b.classList.add('open'); }
+}
+
+function advStep(secId, idx) {
+  var steps = document.querySelectorAll('#pbody-'+secId+' .fs');
+  steps[idx].classList.remove('act');
+  steps[idx].classList.add('done');
+  var dot = steps[idx].querySelector('.fdot');
+  if(dot) dot.textContent = '✓';
+  var next = idx + 1;
+  if(next < steps.length) {
+    steps[next].classList.add('act');
+    steps[next].scrollIntoView({behavior:'smooth',block:'nearest'});
+  } else {
+    var ok = document.getElementById('sok-'+secId);
+    if(ok) ok.classList.add('show');
+    var h = document.getElementById('phdr-'+secId);
+    if(h) h.classList.add('done-sec');
+  }
+}
+
+function confirmSig() {
+  document.getElementById('sp-ci').innerHTML = '<div style="background:#EAF3DE;border:1px solid #A8D5B5;border-radius:9px;padding:11px;font-size:13px;color:#1A6B3A;font-weight:700;">Signal confirmed. Lesson plan calibrated.</div>';
+}
+function showSum() {
+  document.getElementById('vw-plan').style.display='none';
+  document.getElementById('vw-summary').style.display='block';
+}
+function resetSess() {
+  document.getElementById('vw-summary').style.display='none';
+  document.getElementById('vw-checkin').style.display='block';
+  document.getElementById('vw-plan').style.display='none';
+  document.getElementById('sp-ci').style.display='block';
+  document.getElementById('sp-plan').style.display='none';
+}
+function useChip(el) { el.style.opacity='.4'; el.style.textDecoration='line-through'; }
+
+// Chart
+var chartInst = null;
+function initChart() {
+  var canvas = document.getElementById('chart');
+  if(!canvas) return;
+  if(chartInst){ chartInst.destroy(); chartInst=null; }
+  var labels=['S1','S2','S3','S4','S5','S6','S7','S8','S9','S10','S11','S12','S13','S14'];
+  var energy=[2,2,3,2,3,4,3,2,4,3,4,4,3,3];
+  var breaks=[0,0,1,0,0,1,1,0,1,1,1,0,1,1];
+  var engage=[2,3,3,3,4,4,3,3,4,4,4,4,4,4];
+  chartInst = new Chart(canvas, {
+    type:'line',
+    data:{labels:labels,datasets:[
+      {label:'Energy',data:energy,borderColor:'#C8973A',tension:.4,borderWidth:1.5,pointRadius:2,fill:false},
+      {label:'Breakthroughs',data:breaks.map(function(v){return v*4.5;}),borderColor:'#7F77DD',tension:.3,borderWidth:1.5,pointRadius:breaks.map(function(v){return v?5:2;}),fill:false},
+      {label:'Engagement',data:engage,borderColor:'#1D9E75',tension:.4,borderWidth:1.5,pointRadius:2,fill:false}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:'rgba(255,255,255,.06)'},ticks:{color:'rgba(180,200,230,.5)',font:{size:9}}},y:{min:0,max:5,grid:{color:'rgba(255,255,255,.06)'},ticks:{color:'rgba(180,200,230,.5)',font:{size:9},stepSize:1}}}}
+  });
+}
 </script>
 </body>
 </html>
