@@ -15,6 +15,20 @@ body{font-family:system-ui,sans-serif;background:#0D1B2E;color:#fff;min-height:1
 .screen{display:none;height:calc(100vh - 52px);overflow:hidden;}
 .screen.active{display:flex;}
 
+/* API KEY MODAL */
+.api-modal{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.8);display:flex;align-items:center;justify-content:center;z-index:9999;}
+.api-modal.hidden{display:none;}
+.api-box{background:#1B2A4A;border:2px solid #C8973A;border-radius:13px;padding:28px;max-width:420px;text-align:center;}
+.api-title{font-size:18px;font-weight:800;color:#fff;margin-bottom:8px;}
+.api-sub{font-size:12px;color:rgba(255,255,255,.6);line-height:1.6;margin-bottom:16px;}
+.api-input{width:100%;background:rgba(255,255,255,.08);border:1px solid rgba(200,151,58,.3);color:#fff;padding:11px 13px;border-radius:8px;font-size:13px;margin-bottom:12px;font-family:monospace;outline:none;}
+.api-input::placeholder{color:rgba(255,255,255,.3);}
+.api-input:focus{border-color:#C8973A;background:rgba(255,255,255,.12);}
+.api-btn{background:linear-gradient(135deg,#C8973A,#E8A840);border:none;border-radius:9px;padding:11px 20px;font-size:13px;font-weight:800;color:#1B2A4A;cursor:pointer;width:100%;}
+.api-btn:hover{transform:translateY(-1px);}
+.api-note{font-size:10px;color:rgba(255,255,255,.4);margin-top:12px;line-height:1.5;}
+.api-link{color:#C8973A;text-decoration:none;}
+
 /* AVATAR */
 #screen-avatar{flex-direction:row;}
 .av-stage{flex:1;background:radial-gradient(ellipse at 50% 40%,#1A2A4A 0%,#0D1B2E 70%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;position:relative;}
@@ -202,6 +216,18 @@ textarea.note-ta::placeholder{color:#C0B8A8;}
 </style>
 </head>
 <body>
+
+<!-- API KEY MODAL -->
+<div class="api-modal" id="apiModal">
+  <div class="api-box">
+    <div class="api-title">Brown Bag — Demo</div>
+    <div class="api-sub">Enter your Anthropic API key to generate AI-powered lesson plans. Your key is stored in browser memory only — never saved.</div>
+    <input class="api-input" id="apiKeyInput" type="password" placeholder="sk-ant-..." autofocus>
+    <button class="api-btn" onclick="setApiKey()">Continue</button>
+    <div class="api-note">Get your free API key at <a class="api-link" href="https://console.anthropic.com" target="_blank">console.anthropic.com</a>. Phase 0 demo uses minimal API calls.</div>
+  </div>
+</div>
+
 <div class="nav">
   <div class="nav-logo">Brown<em>Bag</em></div>
   <div class="nav-tab active" id="tab-avatar" onclick="switchTo('avatar')">My Avatar</div>
@@ -249,7 +275,7 @@ textarea.note-ta::placeholder{color:#C0B8A8;}
   </div>
 </div>
 
-<!-- SESSION SCREEN -->
+<!-- SESSION SCREEN (rest of HTML is identical to before) -->
 <div class="screen" id="screen-session">
   <div class="sess-main">
     <div id="vw-checkin">
@@ -395,8 +421,24 @@ textarea.note-ta::placeholder{color:#C0B8A8;}
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <script>
+var apiKey = null;
 var curEmoji = "🦁";
 var curObjName = "Lion";
+
+// API Key Setup
+function setApiKey() {
+  var key = document.getElementById("apiKeyInput").value.trim();
+  if(!key) { alert("Please enter your API key"); return; }
+  apiKey = key;
+  document.getElementById("apiModal").classList.add("hidden");
+}
+
+// Check if key exists on load
+window.addEventListener("load", function() {
+  var storedKey = sessionStorage.getItem("bbApiKey");
+  if(storedKey) { apiKey = storedKey; document.getElementById("apiModal").classList.add("hidden"); }
+  else { document.getElementById("apiKeyInput").focus(); }
+});
 
 function switchTo(s) {
   document.querySelectorAll(".screen").forEach(function(x){ x.classList.remove("active"); });
@@ -510,8 +552,9 @@ function submitAdjust() {
   document.getElementById("sp-ci").innerHTML = "<div style='background:#FDF6E8;border:1px solid #F5E6CC;border-radius:9px;padding:12px;font-size:13px;color:#7A4800;font-weight:700;'>✓ Override submitted — AI updated.</div><div class='lema-note' style='margin-top:10px;'><strong>This is LEMA in action.</strong> Your correction is a training signal. The AI learns from its mistakes the same way Marcus does.</div>";
 }
 
-// Plan generation
+// Plan generation with API
 async function genPlan() {
+  if(!apiKey) { alert("Please enter your API key first"); return; }
   document.getElementById("vw-checkin").style.display="none";
   document.getElementById("vw-plan").style.display="block";
   document.getElementById("sp-ci").style.display="none";
@@ -520,16 +563,22 @@ async function genPlan() {
   var plan = getFallback();
   try {
     var nurseNote = document.getElementById("nurse-note").value;
-    var prompt = 'Brown Bag AI. Marcus Thompson Age 11 6th Grade UCSF Day 18 Session 14. Fractions. Energy '+scales.e.v+'/5 Pain '+scales.p.v+'/5 Mindset '+mindsetVal+'/100. Nurse note: '+nurseNote+'. Return ONLY valid JSON with these keys: session_headline, session_rationale, next_session_seed, and sections array with 4 items (warmup, core, socratic, closing), each having id, label, title, duration, steps array (each step has title, body, note), and done_msg.';
+    var prompt = 'Brown Bag AI. Marcus Thompson Age 11 6th Grade UCSF Day 18 Session 14. Topic: Fractions. Check-in: Energy '+scales.e.v+'/5 Pain '+scales.p.v+'/5 Mindset '+mindsetVal+'/100. Parent note: '+nurseNote+'. Generate ONLY valid JSON with keys: session_headline, session_rationale, next_session_seed, and sections array (4 items with id, label, title, duration, steps array, done_msg). Return JSON only—no markdown.';
     var res = await fetch("https://api.anthropic.com/v1/messages", {
-      method:"POST", headers:{"Content-Type":"application/json"},
-      body: JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1200,messages:[{role:"user",content:prompt}]})
+      method:"POST",
+      headers:{"Content-Type":"application/json","x-api-key":apiKey},
+      body: JSON.stringify({model:"claude-opus-4-1-20250805",max_tokens:1200,messages:[{role:"user",content:prompt}]})
     });
+    if(!res.ok) throw new Error("API error: "+res.status);
     var d = await res.json();
+    if(d.error) throw new Error(d.error.message);
     var raw = (d.content.find(function(b){return b.type==="text";}) || {}).text || "";
-    var cleaned = raw.split("```json").join("").split("```").join("").trim();
+    var cleaned = raw.split("```json").join("").split("```").join("").split("```").join("").trim();
     plan = JSON.parse(cleaned);
-  } catch(e) {}
+    sessionStorage.setItem("bbApiKey", apiKey);
+  } catch(e) {
+    console.error("API call failed, using fallback:", e.message);
+  }
   renderPlan(plan);
   setTimeout(initChart, 200);
 }
